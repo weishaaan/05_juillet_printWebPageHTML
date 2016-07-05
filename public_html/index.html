@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Printer page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https:/maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+        <link rel="shortcut icon" href="">
+        <script src="//oss.maxcdn.com/bootbox/4.2.0/bootbox.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
+    </head>
+
+    <body>
+        <div><div class="well">MORA - Printing Service</div></div>
+        <p></p>
+        <p><b>Motus étiquettes de cartons</b></p>
+        <p></p>
+        <div class="container"> 
+            <div class="row">
+                <div class="col-xs-6 col-md-4"><div class="well">
+                        <table id="eventsTable" data-height="160">
+                            <thead>
+                                <tr>
+                                    <th data-field="state" data-radio="true"></th>
+                                    <th data-field="ofNum">ofNum</th>
+                                    <!--<th data-field="sreference">sreference</th>-->
+                                </tr>
+                            </thead>
+                        </table>
+                    </div></div>
+
+                <div class="col-xs-6 col-md-4"><div class="well">
+                        <label>Info détaillé:</label>
+                        <p></p>
+                        <label for="ofNum">ofNum:</label>
+                        <label id="ofNum"></label>
+                        <p></p>
+                        <label for="ref">Ref: </label>
+                        <label id="ref"></label>
+                        <p></p>
+                        <label for="ref">sReference: </label>
+                        <label id="sref"></label>
+                        <p></p>
+                    </div></div>
+
+                <div class="col-xs-6 col-md-4"><div class="well">
+                        <p></p>
+                        <table id="printerTable" data-height="160">
+                            <thead>
+                                <tr>
+                                    <th data-field="state" data-radio="true"></th>
+                                    <th data-field="printerName">Imprimantes:</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div></div>
+
+                <div  style="display: none;">
+                    <label id="printer"></label>
+                </div>
+
+                <div class="col-xs-6 col-md-4">
+                    <div class="well">
+                        <p><b>Étiquettes</b></p>
+                        <p></p>
+                        <form role="form" id="etiquette_form">
+                            <div class="form-group">
+                                <label for="number">Nombre:</label>
+                                <input type="text" class="form-control" id="number">
+                            </div>
+                            <div class="form-group">
+                                <label for="type">Type:</label>
+                                <input type="text" class="form-control" id="type">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-xs-6 col-md-4">
+                    <div class="well">
+                        <p><b>Champs à compléter</b></p>
+                        <p></p>
+                        <form role="form" id="etiquette_form">
+                            <div class="form-group">
+                                <label for="express">numéro:Expédition:</label>
+                                <input type="text" class="form-control" id="express" >
+                            </div>
+                            <div class="form-group">
+                                <label for="prefix">préfixe num étiq:</label>
+                                <input type="text" class="form-control" id="prefix">
+                            </div>
+                            <div class="form-group">
+                                <label for="bl">num BL:</label>
+                                <input type="text" class="form-control" id="bl">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-md-4">
+                    <div >
+                        <button id="btn_print" >Imprimer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            //
+            /*    var xhttp = new XMLHttpRequest();
+             var url1,url2,url3;
+             xhttp.onload = function() {
+             myFunction(xhttp);
+             };
+             xhttp.open("GET", "config.xml", true);
+             xhttp.send();
+             
+             function myFunction(xhttp) {
+             var xmlDoc = xhttp.responseXML;
+             url1 = xmlDoc.getElementsByTagName("url1")[0].childNodes[0].nodeValue;
+             url2 = xmlDoc.getElementsByTagName("url2")[0].childNodes[0].nodeValue;
+             url3 = xmlDoc.getElementsByTagName("url3")[0].childNodes[0].nodeValue;
+             k = $('#batchForm').removeAttr('action').attr("action",url3);
+             }
+             */
+            $(document).ready(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8080/PrintMvnWeb/webresources/home/getOfList",
+                    dataType: "json",
+                    success: function (data) {
+                        alert("Success!\n" + "data is:" + JSON.stringify(data));
+                        $('#eventsTable').bootstrapTable({data: data});
+                    },
+                    error: function (data) {
+                        alert('Error: ' + data);
+                    }
+                });
+
+                $('#eventsTable').on('check.bs.table', function (e, row) {
+                    console.log([{ofNum: row.ofNum, reference: row.reference, sreference: row.sreference}]);
+                    $('#ofNum').text(row.ofNum);
+                    $('#ref').text(row.reference);
+                    $('#sref').text(row.sreference);
+                });
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8080/PrintMvnWeb/webresources/home/getPrinterList",
+                    dataType: "json",
+                    success: function (data) {
+                        alert("Success!\n" + "data is:" + JSON.stringify(data));
+                        $('#printerTable').bootstrapTable({data: data});
+                    },
+                    error: function (data) {
+                        alert('Error: ' + data);
+                    }
+                });
+
+                $('#printerTable').on('check.bs.table', function (e, row) {
+                    console.log([{printerName: row.printerName}]);
+                    $('#printer').text(row.printerName);
+                });
+            });
+
+
+            $("#btn_print").click(function () {
+                var postMessage;
+                var ss = '';
+                var result = null;
+                var ofNum_val;
+                var printerName_val;
+                var num_val;
+                var type_val;
+                var express_val;
+                var prefix_val;
+                var bl_val;
+
+                ofNum_val = $('#ofNum').text();
+                printerName_val = $('#printer').text();
+                num_val = $.trim($('#number').val());
+                type_val = $.trim($('#type').val());
+                express_val = $.trim($('#express').val());
+                prefix_val = $.trim($('#prefix').val());
+                bl_val = $.trim($('#bl').val());
+
+                postMessage = {ofNum: ofNum_val, printerName: printerName_val, num: num_val,
+                    type: type_val, express: express_val, prefix: prefix_val, bl: bl_val};
+
+                if (ofNum_val === '')
+                    ss = ss + "l'Of \n";
+                if (printerName_val === '')
+                    ss = ss + "l'imprimante \n";
+                if (num_val === '')
+                    ss = ss + "le nombre de Etiquettes \n";
+                if (type_val === '')
+                    ss = ss + "le type de Etiquettes \n";
+                if (express_val === '')
+                    ss = ss + "le numéro de Expédition \n";
+                if (prefix_val === '')
+                    ss = ss + "le préfixe numéro de Etiquettes\n"
+                if (bl_val === '')
+                    ss = ss + "le numéro de BL \n"
+
+                if (ss !== '') {
+                    result = "Vous avez besoin de saisir/choisir ces valeurs dans les champs correspondants: \n" + ss;
+                    alert(result);
+                } else {
+                    alert("Now launcing web service!");
+                    alert(JSON.stringify(postMessage));
+                    $.ajax({
+                        url: "http://localhost:8080/PrintMvnWeb/webresources/home/postPrintMessage",
+                        type: 'POST',
+                        dataType: 'text',
+                        data: JSON.stringify({"ofNum": "1", "printerName": "printer3", "num": "1", "type": "1", "express": "1", "prefix": "1", "bl": "1"}),
+                        headers: {
+                            'Accept': 'text/plain',
+                            'Content-Type': 'application/json'
+                        },
+                        success: function (result) {
+                            alert("success post to web service! result is " + JSON.stringify(result));
+                        },
+                        error: function (result) {
+                            alert("wrong: " + JSON.stringify(result));
+                        }
+                    });
+                }
+            });
+
+
+
+
+
+        </script>
+
+    </body>
+</html>
