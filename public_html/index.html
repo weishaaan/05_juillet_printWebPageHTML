@@ -23,7 +23,7 @@ and open the template in the editor.
     <body>
         <div><div class="well">MORA - Printing Service</div></div>
         <p></p>
-        <p><b>Motus étiquettes de cartons</b></p>
+        <p><b>         Motus étiquettes de cartons</b></p>
         <p></p>
         <div class="container"> 
             <div class="row">
@@ -114,29 +114,33 @@ and open the template in the editor.
             </div>
         </div>
 
-
         <script>
             //
-            /*    var xhttp = new XMLHttpRequest();
-             var url1,url2,url3;
-             xhttp.onload = function() {
-             myFunction(xhttp);
-             };
-             xhttp.open("GET", "config.xml", true);
-             xhttp.send();
-             
-             function myFunction(xhttp) {
-             var xmlDoc = xhttp.responseXML;
-             url1 = xmlDoc.getElementsByTagName("url1")[0].childNodes[0].nodeValue;
-             url2 = xmlDoc.getElementsByTagName("url2")[0].childNodes[0].nodeValue;
-             url3 = xmlDoc.getElementsByTagName("url3")[0].childNodes[0].nodeValue;
-             k = $('#batchForm').removeAttr('action').attr("action",url3);
-             }
-             */
+            
+            
             $(document).ready(function () {
+                
+                var request = new XMLHttpRequest();
+                request.open("GET", "config.xml", false);
+                request.send();
+                var xml = request.responseXML;
+                var users = xml.getElementsByTagName("configuration");
+                
+                for(var i = 0; i < users.length; i++) {
+                    var user = users[i];
+                    var names = user.getElementsByTagName("url");
+                    var url1 = names[0].childNodes[0].nodeValue;
+                    var url2 = names[1].childNodes[0].nodeValue;
+                    
+                    //for(var j = 0; j < names.length; j++) {
+                      //  alert(names[j].childNodes[0].nodeValue);
+                    //}
+                }
+                
+                
                 $.ajax({
                     type: "GET",
-                    url: "http://localhost:8080/PrintMvnWeb/webresources/home/getOfList",
+                    url: url1, //"http://localhost:8080/PrintMvnWeb/webresources/home/getOfList",
                     dataType: "json",
                     success: function (data) {
                         alert("Success!\n" + "data is:" + JSON.stringify(data));
@@ -156,7 +160,7 @@ and open the template in the editor.
 
                 $.ajax({
                     type: "GET",
-                    url: "http://localhost:8080/PrintMvnWeb/webresources/home/getPrinterList",
+                    url: url2, //"http://localhost:8080/PrintMvnWeb/webresources/home/getPrinterList",
                     dataType: "json",
                     success: function (data) {
                         alert("Success!\n" + "data is:" + JSON.stringify(data));
