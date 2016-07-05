@@ -173,7 +173,6 @@ and open the template in the editor.
                 });
             });
 
-
             $("#btn_print").click(function () {
                 var postMessage;
                 var ss = '';
@@ -222,13 +221,14 @@ and open the template in the editor.
                         url: "http://localhost:8080/PrintMvnWeb/webresources/home/postPrintMessage",
                         type: 'POST',
                         dataType: 'text',
-                        data: JSON.stringify({"ofNum": "1", "printerName": "printer3", "num": "1", "type": "1", "express": "1", "prefix": "1", "bl": "1"}),
+                        data: JSON.stringify(postMessage),
                         headers: {
                             'Accept': 'text/plain',
                             'Content-Type': 'application/json'
                         },
                         success: function (result) {
                             alert("success post to web service! result is " + JSON.stringify(result));
+                            window.location.href = "retour.html";
                         },
                         error: function (result) {
                             alert("wrong: " + JSON.stringify(result));
