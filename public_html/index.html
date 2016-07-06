@@ -33,7 +33,10 @@ and open the template in the editor.
                                 <tr>
                                     <th data-field="state" data-radio="true"></th>
                                     <th data-field="ofNum">ofNum</th>
-                                    <!--<th data-field="sreference">sreference</th>-->
+                                    <!--
+                                    
+                                    <th data-field="sreference">sreference</th>
+                                    -->
                                 </tr>
                             </thead>
                         </table>
@@ -115,28 +118,23 @@ and open the template in the editor.
         </div>
 
         <script>
-            //
-            
-            
             $(document).ready(function () {
                 
                 var request = new XMLHttpRequest();
                 request.open("GET", "config.xml", false);
                 request.send();
                 var xml = request.responseXML;
-                var users = xml.getElementsByTagName("configuration");
+                var config = xml.getElementsByTagName("configuration");
                 
-                for(var i = 0; i < users.length; i++) {
-                    var user = users[i];
-                    var names = user.getElementsByTagName("url");
+                for(var i = 0; i < config.length; i++) {
+                    var url = config[i];
+                    var names = url.getElementsByTagName("url");
                     var url1 = names[0].childNodes[0].nodeValue;
                     var url2 = names[1].childNodes[0].nodeValue;
-                    
                     //for(var j = 0; j < names.length; j++) {
                       //  alert(names[j].childNodes[0].nodeValue);
                     //}
                 }
-                
                 
                 $.ajax({
                     type: "GET",
@@ -145,19 +143,22 @@ and open the template in the editor.
                     success: function (data) {
                         alert("Success!\n" + "data is:" + JSON.stringify(data));
                         $('#eventsTable').bootstrapTable({data: data});
+                        $("#eventsTable tbody tr td input").each(function(i) {
+                            $(this).attr('name', 'ofNum');
+                        });
                     },
                     error: function (data) {
                         alert('Error: ' + data);
                     }
                 });
-
+                
                 $('#eventsTable').on('check.bs.table', function (e, row) {
                     console.log([{ofNum: row.ofNum, reference: row.reference, sreference: row.sreference}]);
                     $('#ofNum').text(row.ofNum);
                     $('#ref').text(row.reference);
                     $('#sref').text(row.sreference);
                 });
-
+                
                 $.ajax({
                     type: "GET",
                     url: url2, //"http://localhost:8080/PrintMvnWeb/webresources/home/getPrinterList",
@@ -165,12 +166,19 @@ and open the template in the editor.
                     success: function (data) {
                         alert("Success!\n" + "data is:" + JSON.stringify(data));
                         $('#printerTable').bootstrapTable({data: data});
+                        $("#printerTable tbody tr td input").each(function(i) {
+                            $(this).attr('name', 'printer');
+                        });
                     },
                     error: function (data) {
                         alert('Error: ' + data);
                     }
                 });
 
+                $('#printerTable tbody tr').each(function(){
+                    $(this).attr('name','printer');
+                });
+               
                 $('#printerTable').on('check.bs.table', function (e, row) {
                     console.log([{printerName: row.printerName}]);
                     $('#printer').text(row.printerName);
