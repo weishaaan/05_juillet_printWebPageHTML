@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getOfList</url>
+    <url>http://localhost:8080/webresources/home/getOfList</url>
     
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getPrinterList</url>
+    <url>http://localhost:8080/webresources/home/getPrinterList</url>
     
-    <url>http://localhost:8080/Batch_Maven_WebApp/webresources/home/postTestBatchParam</url>
+    <url>http://localhost:8080/webresources/home/postTestBatchParam</url>
     
 </configuration>
