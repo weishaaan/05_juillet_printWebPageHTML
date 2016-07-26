@@ -67,7 +67,7 @@ and open the template in the editor.
                             <thead>
                                 <tr>
                                     <th data-field="state" data-radio="true"></th>
-                                    <th data-field="NAME">Imprimantes:</th>
+                                    <th data-field="NAME">Imprimantes</th>
                                 </tr>
                             </thead>
                         </table>
@@ -81,7 +81,7 @@ and open the template in the editor.
                     <div class="well">
                         <p><b>Étiquettes</b></p>
                         <p></p>
-                        <form role="form" id="etiquette_form">
+                        <!--<form role="form" id="etiquette_form"></form>-->
                             <div class="form-group">
                                 <label for="number">Nombre:</label>
                                 <input type="text" class="form-control" id="number">
@@ -90,10 +90,30 @@ and open the template in the editor.
                                 <label for="type">Type:</label>
                                 <input type="text" class="form-control" id="type">
                             </div>
-                        </form>
+                        
+                        <table id="labelTypeTable" data-height="300" data-width="500">
+                            <thead>
+                                <tr>
+                                    <th data-field="state" data-radio="true"></th>
+                                    <th data-field="CODE">Code</th>
+                                    <th data-field="DESCRIPTION">Description</th>
+                                    <th data-field="TYPE">Type</th>
+                                    <th data-field="X">X</th>
+                                    <th data-field="Y">Y</th>
+                                    <th data-field="VALUE">Value</th>
+                                    <th data-field="CALCULATED">Calculated</th>   
+                                    <th data-field="SOURCE">Source</th>
+                                </tr>
+                            </thead>
+                        </table>
+                        
                     </div>
                 </div>
-
+       
+                <div  style="display: none;">
+                    <label id="labelType"></label>
+                </div>
+                
                 <div class="col-xs-6 col-md-4">
                     <div class="well">
                         <p><b>Champs à compléter</b></p>
@@ -102,7 +122,7 @@ and open the template in the editor.
                             <label for="datepicker">Date:</label>
                             <input type="text" id="datepicker" />
                         </div>
-                        <form role="form" id="etiquette_form">
+                        <form role="form" id="other_form">
                             <div class="form-group">
                                 <label for="express">numéro:Expédition:</label>
                                 <input type="text" class="form-control" id="express" >
@@ -136,6 +156,7 @@ and open the template in the editor.
                     var names = url.getElementsByTagName("url");
                     var url1 = names[0].childNodes[0].nodeValue;
                     var url2 = names[1].childNodes[0].nodeValue;
+                    //var url3 = names[2].childNodes[0].nodeValue;
                     //for(var j = 0; j < names.length; j++) {
                       //  alert(names[j].childNodes[0].nodeValue);
                     //}
@@ -156,7 +177,7 @@ and open the template in the editor.
                     }
 
                 });
-                
+            //eventsTable    
                 $.ajax({
                     type: "GET",
                     url: url1, //"http://localhost:8080/PrintMvnWeb/webresources/home/getOfList",
@@ -180,6 +201,7 @@ and open the template in the editor.
                     $('#sref').text(row.sreference);
                 });
                 
+            //printerTable    
                 $.ajax({
                     type: "GET",
                     url: url2, //"http://localhost:8080/PrintMvnWeb/webresources/home/getAllPrinter
@@ -195,15 +217,53 @@ and open the template in the editor.
                         alert('Error: ' + data);
                     }
                 });
-
+/*
                 $('#printerTable tbody tr').each(function(){
                     $(this).attr('name','printer');
-                });
+                });*/
                
                 $('#printerTable').on('check.bs.table', function (e, row) {
                     console.log([{NAME: row.NAME}]);
                     $('#printer').text(row.NAME);
                 });
+                
+                
+            //labelTypeTable   
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8080/PrintMvnWeb/webresources/home/getLabelTypes",
+                    dataType: "json",
+                    success: function (data) {
+                        alert("Success!\n" + "data is:" + JSON.stringify(data.FIELD));
+                        $('#labelTypeTable').bootstrapTable({data: data.FIELD});
+                        $("#labelTypeTable tbody tr td input").each(function(i) {
+                            $(this).attr('name', 'labelType');
+                        });
+                    },
+                    error: function (data) {
+                        alert('Error: ' + data);
+                    }
+                });
+                /*
+                $('#labelTypeTable tbody tr').each(function(){
+                    $(this).attr('name','FIELD.CODE');
+                    $(this).attr('name','FIELD.DESCRIPTION');
+                    $(this).attr('name','FIELD.TYPE');
+                    $(this).attr('name','FIELD.X');
+                    $(this).attr('name','FIELD.Y');
+                    $(this).attr('name','FIELD.VALUE');
+                    $(this).attr('name','FIELD.CALCULATED');
+                    $(this).attr('name','FIELD.SOURCE');
+                    
+                    
+                });*/
+               
+                $('#labelTypeTable').on('check.bs.table', function (e, row) {
+                    console.log([{CODE: row.FIELD.CODE}]);
+                    $('#labelType').text(row.FIELD.CODE);
+                });
+                
+                
             });
 
             $("#btn_print").click(function () {
