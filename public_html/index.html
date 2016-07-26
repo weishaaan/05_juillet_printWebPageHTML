@@ -18,9 +18,15 @@ and open the template in the editor.
         <link rel="shortcut icon" href="">
         <script src="//oss.maxcdn.com/bootbox/4.2.0/bootbox.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
     </head>
 
     <body>
+        <input type="text" id="datepicker" />
         <div><div class="well">MORA - Printing Service</div></div>
         <p></p>
         <p><b>         Motus étiquettes de cartons</b></p>
@@ -99,8 +105,8 @@ and open the template in the editor.
                                 <input type="text" class="form-control" id="express" >
                             </div>
                             <div class="form-group">
-                                <label for="prefix">préfixe num étiq:</label>
-                                <input type="text" class="form-control" id="prefix">
+                                <label for="datepicker">Date:</label>
+                                <input type="text" id="datepicker" />
                             </div>
                             <div class="form-group">
                                 <label for="bl">num BL:</label>
@@ -115,6 +121,7 @@ and open the template in the editor.
                     </div>
                 </div>
             </div>
+             
         </div>
 
         <script>
@@ -125,7 +132,6 @@ and open the template in the editor.
                 request.send();
                 var xml = request.responseXML;
                 var config = xml.getElementsByTagName("configuration");
-                
                 for(var i = 0; i < config.length; i++) {
                     var url = config[i];
                     var names = url.getElementsByTagName("url");
@@ -135,6 +141,23 @@ and open the template in the editor.
                       //  alert(names[j].childNodes[0].nodeValue);
                     //}
                 }
+                
+                
+                $( "#datepicker" ).datepicker({
+                    changeMonth: true,//this option for allowing user to select month
+                    changeYear: true, //this option for allowing user to select from year range
+                    monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+                    monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+                    dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                    dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+                    dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                    weekHeader: 'Sem.',
+                    dateFormat: 'dd-mm-yy',
+                    onSelect: function(dateText, inst) {
+                        date = dateText;
+                    }
+
+                });
                 
                 $.ajax({
                     type: "GET",
@@ -194,19 +217,26 @@ and open the template in the editor.
                 var num_val;
                 var type_val;
                 var express_val;
-                var prefix_val;
+                
                 var bl_val;
-
+                var date_val;
+                
+        
+                
+                
                 ofNum_val = $('#ofNum').text();
                 printerName_val = $('#printer').text();
                 num_val = $.trim($('#number').val());
                 type_val = $.trim($('#type').val());
                 express_val = $.trim($('#express').val());
-                prefix_val = $.trim($('#prefix').val());
+                
+                date_val  = $("#datepicker").datepicker( "getDate" );
+                
+                
                 bl_val = $.trim($('#bl').val());
 
                 postMessage = {ofNum: ofNum_val, printerName: printerName_val, num: num_val,
-                    type: type_val, express: express_val, prefix: prefix_val, bl: bl_val};
+                    type: type_val, express: express_val, date: date_val, bl: bl_val};
 
                 if (ofNum_val === '')
                     ss = ss + "l'Of \n";
@@ -218,8 +248,8 @@ and open the template in the editor.
                     ss = ss + "le type de Etiquettes \n";
                 if (express_val === '')
                     ss = ss + "le numéro de Expédition \n";
-                if (prefix_val === '')
-                    ss = ss + "le préfixe numéro de Etiquettes\n"
+                if (date_val === '' || date_val === null )
+                    ss = ss + "la date\n"
                 if (bl_val === '')
                     ss = ss + "le numéro de BL \n"
 
