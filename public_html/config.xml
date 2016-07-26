@@ -3,7 +3,7 @@
     
     <url>http://localhost:8080/PrintMvnWeb/webresources/home/getOfList</url>
     
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getPrinterList</url>
+    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getAllPrinter</url>
     
     <url>http://localhost:8080/PrintMvnWeb/webresources/home/postTestBatchParam</url>
     

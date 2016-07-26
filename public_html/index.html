@@ -18,15 +18,14 @@ and open the template in the editor.
         <link rel="shortcut icon" href="">
         <script src="//oss.maxcdn.com/bootbox/4.2.0/bootbox.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
+        
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-    
-        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-
+    
     </head>
 
     <body>
-        <input type="text" id="datepicker" />
         <div><div class="well">MORA - Printing Service</div></div>
         <p></p>
         <p><b>         Motus étiquettes de cartons</b></p>
@@ -68,7 +67,7 @@ and open the template in the editor.
                             <thead>
                                 <tr>
                                     <th data-field="state" data-radio="true"></th>
-                                    <th data-field="printerName">Imprimantes:</th>
+                                    <th data-field="NAME">Imprimantes:</th>
                                 </tr>
                             </thead>
                         </table>
@@ -99,14 +98,14 @@ and open the template in the editor.
                     <div class="well">
                         <p><b>Champs à compléter</b></p>
                         <p></p>
+                        <div class="form-group">
+                            <label for="datepicker">Date:</label>
+                            <input type="text" id="datepicker" />
+                        </div>
                         <form role="form" id="etiquette_form">
                             <div class="form-group">
                                 <label for="express">numéro:Expédition:</label>
                                 <input type="text" class="form-control" id="express" >
-                            </div>
-                            <div class="form-group">
-                                <label for="datepicker">Date:</label>
-                                <input type="text" id="datepicker" />
                             </div>
                             <div class="form-group">
                                 <label for="bl">num BL:</label>
@@ -121,7 +120,6 @@ and open the template in the editor.
                     </div>
                 </div>
             </div>
-             
         </div>
 
         <script>
@@ -132,6 +130,7 @@ and open the template in the editor.
                 request.send();
                 var xml = request.responseXML;
                 var config = xml.getElementsByTagName("configuration");
+                
                 for(var i = 0; i < config.length; i++) {
                     var url = config[i];
                     var names = url.getElementsByTagName("url");
@@ -141,7 +140,6 @@ and open the template in the editor.
                       //  alert(names[j].childNodes[0].nodeValue);
                     //}
                 }
-                
                 
                 $( "#datepicker" ).datepicker({
                     changeMonth: true,//this option for allowing user to select month
@@ -184,13 +182,13 @@ and open the template in the editor.
                 
                 $.ajax({
                     type: "GET",
-                    url: url2, //"http://localhost:8080/PrintMvnWeb/webresources/home/getPrinterList",
+                    url: url2, //"http://localhost:8080/PrintMvnWeb/webresources/home/getAllPrinter
                     dataType: "json",
                     success: function (data) {
                         alert("Success!\n" + "data is:" + JSON.stringify(data));
                         $('#printerTable').bootstrapTable({data: data});
                         $("#printerTable tbody tr td input").each(function(i) {
-                            $(this).attr('name', 'printer');
+                            $(this).attr('name', 'NAME');
                         });
                     },
                     error: function (data) {
@@ -203,8 +201,8 @@ and open the template in the editor.
                 });
                
                 $('#printerTable').on('check.bs.table', function (e, row) {
-                    console.log([{printerName: row.printerName}]);
-                    $('#printer').text(row.printerName);
+                    console.log([{NAME: row.NAME}]);
+                    $('#printer').text(row.NAME);
                 });
             });
 
@@ -213,34 +211,29 @@ and open the template in the editor.
                 var ss = '';
                 var result = null;
                 var ofNum_val;
-                var printerName_val;
+                var NAME_val;
                 var num_val;
                 var type_val;
                 var express_val;
-                
-                var bl_val;
                 var date_val;
-                
-        
-                
-                
+                var bl_val;
+
                 ofNum_val = $('#ofNum').text();
-                printerName_val = $('#printer').text();
+                NAME_val = $('#printer').text();
                 num_val = $.trim($('#number').val());
                 type_val = $.trim($('#type').val());
                 express_val = $.trim($('#express').val());
                 
                 date_val  = $("#datepicker").datepicker( "getDate" );
                 
-                
                 bl_val = $.trim($('#bl').val());
 
-                postMessage = {ofNum: ofNum_val, printerName: printerName_val, num: num_val,
-                    type: type_val, express: express_val, date: date_val, bl: bl_val};
+                postMessage = {ofNum: ofNum_val, NAME: NAME_val, num: num_val,
+                    type: type_val,  date: date_val,express: express_val, bl: bl_val};
 
                 if (ofNum_val === '')
                     ss = ss + "l'Of \n";
-                if (printerName_val === '')
+                if (NAME_val === '')
                     ss = ss + "l'imprimante \n";
                 if (num_val === '')
                     ss = ss + "le nombre de Etiquettes \n";
@@ -248,8 +241,8 @@ and open the template in the editor.
                     ss = ss + "le type de Etiquettes \n";
                 if (express_val === '')
                     ss = ss + "le numéro de Expédition \n";
-                if (date_val === '' || date_val === null )
-                    ss = ss + "la date\n"
+                if (date_val === '')
+                    ss = ss + "la data \n";
                 if (bl_val === '')
                     ss = ss + "le numéro de BL \n"
 
