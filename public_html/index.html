@@ -87,26 +87,23 @@ and open the template in the editor.
                                 <input type="text" class="form-control" id="number">
                             </div>
                             <div class="form-group">
-                                <label for="type">Type:</label>
-                                <input type="text" class="form-control" id="type">
-                            </div>
-                        
-                        <table id="labelTypeTable" data-height="300" data-width="500">
-                            <thead>
-                                <tr>
-                                    <th data-field="state" data-radio="true"></th>
-                                    <th data-field="CODE">Code</th>
-                                    <th data-field="DESCRIPTION">Description</th>
-                                    <th data-field="TYPE">Type</th>
-                                    <th data-field="X">X</th>
-                                    <th data-field="Y">Y</th>
-                                    <th data-field="VALUE">Value</th>
-                                    <th data-field="CALCULATED">Calculated</th>   
-                                    <th data-field="SOURCE">Source</th>
-                                </tr>
-                            </thead>
-                        </table>
-                        
+                                <label for="labelTypeTable">Étiquette Type:</label>
+                                <table id="labelTypeTable" data-height="300" data-width="500">
+                                    <thead>
+                                        <tr>
+                                            <th data-field="state" data-radio="true"></th>
+                                            <th data-field="CODE">Code</th>
+                                            <th data-field="DESCRIPTION">Description</th>
+                                            <th data-field="TYPE">Type</th>
+                                            <th data-field="X">X</th>
+                                            <th data-field="Y">Y</th>
+                                            <th data-field="VALUE">Value</th>
+                                            <th data-field="CALCULATED">Calculated</th>   
+                                            <th data-field="SOURCE">Source</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                        </div>
                     </div>
                 </div>
        
@@ -154,14 +151,15 @@ and open the template in the editor.
                 for(var i = 0; i < config.length; i++) {
                     var url = config[i];
                     var names = url.getElementsByTagName("url");
-                    var url1 = names[0].childNodes[0].nodeValue;
-                    var url2 = names[1].childNodes[0].nodeValue;
-                    //var url3 = names[2].childNodes[0].nodeValue;
+                    var url_OfList = names[0].childNodes[0].nodeValue;
+                    var url_allPrinters = names[1].childNodes[0].nodeValue;
+                    
+                    var url_labelType = names[3].childNodes[0].nodeValue;
                     //for(var j = 0; j < names.length; j++) {
                       //  alert(names[j].childNodes[0].nodeValue);
                     //}
                 }
-                
+                //alert("url_allPrinters  :" +url_allPrinters);
                 $( "#datepicker" ).datepicker({
                     changeMonth: true,//this option for allowing user to select month
                     changeYear: true, //this option for allowing user to select from year range
@@ -180,10 +178,10 @@ and open the template in the editor.
             //eventsTable    
                 $.ajax({
                     type: "GET",
-                    url: url1, //"http://localhost:8080/PrintMvnWeb/webresources/home/getOfList",
+                    url: url_OfList, //"http://localhost:8080/PrintMvnWeb/webresources/home/getOfList",
                     dataType: "json",
                     success: function (data) {
-                        alert("Success!\n" + "data is:" + JSON.stringify(data));
+                        //alert("Success!\n" + "data is:" + JSON.stringify(data));
                         $('#eventsTable').bootstrapTable({data: data});
                         $("#eventsTable tbody tr td input").each(function(i) {
                             $(this).attr('name', 'ofNum');
@@ -204,10 +202,10 @@ and open the template in the editor.
             //printerTable    
                 $.ajax({
                     type: "GET",
-                    url: url2, //"http://localhost:8080/PrintMvnWeb/webresources/home/getAllPrinter
+                    url: url_allPrinters, //"http://localhost:8080/PrintMvnWeb/webresources/home/getAllPrinter
                     dataType: "json",
                     success: function (data) {
-                        alert("Success!\n" + "data is:" + JSON.stringify(data));
+                        //alert("Success!\n" + "data is:" + JSON.stringify(data));
                         $('#printerTable').bootstrapTable({data: data});
                         $("#printerTable tbody tr td input").each(function(i) {
                             $(this).attr('name', 'NAME');
@@ -231,11 +229,16 @@ and open the template in the editor.
             //labelTypeTable   
                 $.ajax({
                     type: "GET",
-                    url: "http://localhost:8080/PrintMvnWeb/webresources/home/getLabelTypes",
+                    url: url_labelType, // "http://localhost:8080/PrintMvnWeb/webresources/home/getLabelTypes",
                     dataType: "json",
                     success: function (data) {
-                        alert("Success!\n" + "data is:" + JSON.stringify(data.FIELD));
-                        $('#labelTypeTable').bootstrapTable({data: data.FIELD});
+                        alert("Success!\n" + "data is:" + JSON.stringify(data));
+                        var labelTypeData = [];
+                        $.each(data, function(idx, obj) {
+                            labelTypeData.push(obj.FIELD);
+                        });
+                        //alert("data is "+JSON.stringify(labelTypeData));
+                        $('#labelTypeTable').bootstrapTable({data: labelTypeData});
                         $("#labelTypeTable tbody tr td input").each(function(i) {
                             $(this).attr('name', 'labelType');
                         });
@@ -244,23 +247,11 @@ and open the template in the editor.
                         alert('Error: ' + data);
                     }
                 });
-                /*
-                $('#labelTypeTable tbody tr').each(function(){
-                    $(this).attr('name','FIELD.CODE');
-                    $(this).attr('name','FIELD.DESCRIPTION');
-                    $(this).attr('name','FIELD.TYPE');
-                    $(this).attr('name','FIELD.X');
-                    $(this).attr('name','FIELD.Y');
-                    $(this).attr('name','FIELD.VALUE');
-                    $(this).attr('name','FIELD.CALCULATED');
-                    $(this).attr('name','FIELD.SOURCE');
-                    
-                    
-                });*/
                
                 $('#labelTypeTable').on('check.bs.table', function (e, row) {
-                    console.log([{CODE: row.FIELD.CODE}]);
-                    $('#labelType').text(row.FIELD.CODE);
+                    //console.log([{CODE: row.CODE}]);
+                    console.log("code is :" + row.CODE);
+                    $('#labelType').val(row.CODE);
                 });
                 
                 
@@ -281,7 +272,7 @@ and open the template in the editor.
                 ofNum_val = $('#ofNum').text();
                 NAME_val = $('#printer').text();
                 num_val = $.trim($('#number').val());
-                type_val = $.trim($('#type').val());
+                type_val = $.trim($('#labelType').val());
                 express_val = $.trim($('#express').val());
                 
                 date_val  = $("#datepicker").datepicker( "getDate" );
