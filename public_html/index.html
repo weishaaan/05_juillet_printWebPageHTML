@@ -74,7 +74,7 @@ and open the template in the editor.
                     </div></div>
 
                 <div  style="display: none;">
-                    <label id="printer"></label>
+                    <label id="printer_name"></label>
                 </div>
 
                 <div class="col-xs-6 col-md-4">
@@ -87,29 +87,15 @@ and open the template in the editor.
                                 <input type="text" class="form-control" id="number">
                             </div>
                             <div class="form-group">
-                                <label for="labelTypeTable">Étiquette Type:</label>
-                                <table id="labelTypeTable" data-height="300" data-width="500">
-                                    <thead>
-                                        <tr>
-                                            <th data-field="state" data-radio="true"></th>
-                                            <th data-field="CODE">Code</th>
-                                            <th data-field="DESCRIPTION">Description</th>
-                                            <th data-field="TYPE">Type</th>
-                                            <th data-field="X">X</th>
-                                            <th data-field="Y">Y</th>
-                                            <th data-field="VALUE">Value</th>
-                                            <th data-field="CALCULATED">Calculated</th>   
-                                            <th data-field="SOURCE">Source</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                                <label for="labelTypeCombo">Étiquette Type:</label>
+                                <select name="labelTypeCombo_select" class="selectpicker" id="labelTypeCombo">
+                                     <option value="" >Choisir un type</option>
+                                    
+                                </select>
                         </div>
                     </div>
                 </div>
        
-                <div  style="display: none;">
-                    <label id="labelType"></label>
-                </div>
                 
                 <div class="col-xs-6 col-md-4">
                     <div class="well">
@@ -153,7 +139,7 @@ and open the template in the editor.
                     var names = url.getElementsByTagName("url");
                     var url_OfList = names[0].childNodes[0].nodeValue;
                     var url_allPrinters = names[1].childNodes[0].nodeValue;
-                    
+                    var url_post = names[2].childNodes[0].nodeValue;
                     var url_labelType = names[3].childNodes[0].nodeValue;
                     //for(var j = 0; j < names.length; j++) {
                       //  alert(names[j].childNodes[0].nodeValue);
@@ -199,6 +185,8 @@ and open the template in the editor.
                     $('#sref').text(row.sreference);
                 });
                 
+                var printerData;
+                
             //printerTable    
                 $.ajax({
                     type: "GET",
@@ -207,8 +195,10 @@ and open the template in the editor.
                     success: function (data) {
                         //alert("Success!\n" + "data is:" + JSON.stringify(data));
                         $('#printerTable').bootstrapTable({data: data});
+                        
+                        printerData = JSON.stringify(data);
                         $("#printerTable tbody tr td input").each(function(i) {
-                            $(this).attr('name', 'NAME');
+                          //  $(this).attr('name', 'NAME');
                         });
                     },
                     error: function (data) {
@@ -221,26 +211,22 @@ and open the template in the editor.
                 });*/
                
                 $('#printerTable').on('check.bs.table', function (e, row) {
-                    console.log([{NAME: row.NAME}]);
-                    $('#printer').text(row.NAME);
+                    console.log("printer NAME is :"+ row.NAME);
+                    $('#printer_name').text(row.NAME);
                 });
                 
-                
-            //labelTypeTable   
+                //<option value="dsjkcbs">dsjkcbs - <i>Email, Facebook</i></option>
+                //
+                //labelTypeCombo   
                 $.ajax({
                     type: "GET",
                     url: url_labelType, // "http://localhost:8080/PrintMvnWeb/webresources/home/getLabelTypes",
                     dataType: "json",
                     success: function (data) {
-                        alert("Success!\n" + "data is:" + JSON.stringify(data));
-                        var labelTypeData = [];
-                        $.each(data, function(idx, obj) {
-                            labelTypeData.push(obj.FIELD);
-                        });
-                        //alert("data is "+JSON.stringify(labelTypeData));
-                        $('#labelTypeTable').bootstrapTable({data: labelTypeData});
-                        $("#labelTypeTable tbody tr td input").each(function(i) {
-                            $(this).attr('name', 'labelType');
+                        //alert("Success!\n" + "data is:" + JSON.stringify(data));
+                        $.each(data,function(index){
+                            //alert("s is :" + data[index].s);
+                            $('#labelTypeCombo').append("<option value= " + data[index].reference + ">" + data[index].s + "</option>")
                         });
                     },
                     error: function (data) {
@@ -248,20 +234,17 @@ and open the template in the editor.
                     }
                 });
                
-                $('#labelTypeTable').on('check.bs.table', function (e, row) {
-                    //console.log([{CODE: row.CODE}]);
-                    console.log("code is :" + row.CODE);
-                    $('#labelType').val(row.CODE);
-                });
                 
-                
-            });
+            
 
             $("#btn_print").click(function () {
                 var postMessage;
                 var ss = '';
                 var result = null;
                 var ofNum_val;
+                
+                var ip_val;
+                
                 var NAME_val;
                 var num_val;
                 var type_val;
@@ -269,19 +252,14 @@ and open the template in the editor.
                 var date_val;
                 var bl_val;
 
+                NAME_val = $('#printer_name').text();
                 ofNum_val = $('#ofNum').text();
-                NAME_val = $('#printer').text();
                 num_val = $.trim($('#number').val());
-                type_val = $.trim($('#labelType').val());
                 express_val = $.trim($('#express').val());
-                
+                type_val = $('select[name=labelTypeCombo_select] option:selected').val();
                 date_val  = $("#datepicker").datepicker( "getDate" );
-                
                 bl_val = $.trim($('#bl').val());
-
-                postMessage = {ofNum: ofNum_val, NAME: NAME_val, num: num_val,
-                    type: type_val,  date: date_val,express: express_val, bl: bl_val};
-
+                
                 if (ofNum_val === '')
                     ss = ss + "l'Of \n";
                 if (NAME_val === '')
@@ -296,15 +274,26 @@ and open the template in the editor.
                     ss = ss + "la data \n";
                 if (bl_val === '')
                     ss = ss + "le numéro de BL \n"
-
+                
                 if (ss !== '') {
                     result = "Vous avez besoin de saisir/choisir ces valeurs dans les champs correspondants: \n" + ss;
                     alert(result);
                 } else {
+                    printerData = $.parseJSON(printerData);
+                    $.each(printerData, function(index) {
+                        ip_val = printerData[index].IP;
+                        if(printerData[index].NAME === NAME_val){
+                            //alert("ip_val is:"+ ip_val+",NAME in the json data is :" + printerData[index].NAME  + ", name_val is "+ NAME_val);
+                            return false;
+                        }
+                    }); 
+                    postMessage = {ofNum: ofNum_val, ip: ip_val, num: num_val,
+                    type: type_val,  date: date_val,express: express_val, bl: bl_val};
+
                     alert("Now launcing web service!");
                     alert(JSON.stringify(postMessage));
                     $.ajax({
-                        url: "http://localhost:8080/PrintMvnWeb/webresources/home/postPrintMessage",
+                        url: url_post,//"http://localhost:8080/PrintMvnWeb/webresources/home/postPrintMessage",
                         type: 'POST',
                         dataType: 'text',
                         data: JSON.stringify(postMessage),
@@ -324,7 +313,7 @@ and open the template in the editor.
             });
 
 
-
+});
 
 
         </script>

@@ -5,9 +5,9 @@
     
     <url>http://localhost:8080/PrintMvnWeb/webresources/home/getAllPrinter</url>
     
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/postTestBatchParam</url>
+    <url>http://localhost:8080/PrintMvnWeb/webresources/home/postPrintMessage</url>
     
     <url>http://localhost:8080/PrintMvnWeb/webresources/home/getLabelTypes</url>
-    
+
     
 </configuration>
