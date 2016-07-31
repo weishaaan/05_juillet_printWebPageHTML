@@ -73,7 +73,7 @@ and open the template in the editor.
                         </table>
                     </div></div>
 
-                <div  style="display: none;">
+                <div style="display: none;">
                     <label id="printer_name"></label>
                 </div>
 
@@ -96,25 +96,17 @@ and open the template in the editor.
                     </div>
                 </div>
        
-                
+                <div class="form-group" id="model" style="display: none;">
+                    <label for="xman"></label>
+                    <input type="text" id="xman" />
+                </div>
+
                 <div class="col-xs-6 col-md-4">
                     <div class="well">
                         <p><b>Champs à compléter</b></p>
-                        <p></p>
-                        <div class="form-group">
-                            <label for="datepicker">Date:</label>
-                            <input type="text" id="datepicker" />
-                        </div>
-                        <form role="form" id="other_form">
-                            <div class="form-group">
-                                <label for="express">numéro:Expédition:</label>
-                                <input type="text" class="form-control" id="express" >
-                            </div>
-                            <div class="form-group">
-                                <label for="bl">num BL:</label>
-                                <input type="text" class="form-control" id="bl">
-                            </div>
-                        </form>
+                        <p ></p>
+                        <div id="userInput"></div>  
+
                     </div>
                 </div>
                 <div class="col-xs-6 col-md-4">
@@ -146,7 +138,7 @@ and open the template in the editor.
                     //}
                 }
                 //alert("url_allPrinters  :" +url_allPrinters);
-                $( "#datepicker" ).datepicker({
+                /*$( "#datepicker" ).datepicker({
                     changeMonth: true,//this option for allowing user to select month
                     changeYear: true, //this option for allowing user to select from year range
                     monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
@@ -160,7 +152,7 @@ and open the template in the editor.
                         date = dateText;
                     }
 
-                });
+                });*/
             //eventsTable    
                 $.ajax({
                     type: "GET",
@@ -215,51 +207,85 @@ and open the template in the editor.
                     $('#printer_name').text(row.NAME);
                 });
                 
-                //<option value="dsjkcbs">dsjkcbs - <i>Email, Facebook</i></option>
-                //
-                //labelTypeCombo   
+                
+            //labelTypeCombo   
+                
+                var comboData;
+                var fields='';
+                var postFields;
+                var inputCodeArray=[];
                 $.ajax({
                     type: "GET",
                     url: url_labelType, // "http://localhost:8080/PrintMvnWeb/webresources/home/getLabelTypes",
                     dataType: "json",
                     success: function (data) {
+                        comboData = data;
                         //alert("Success!\n" + "data is:" + JSON.stringify(data));
                         $.each(data,function(index){
-                            //alert("s is :" + data[index].s);
-                            $('#labelTypeCombo').append("<option value= " + data[index].reference + ">" + data[index].s + "</option>")
+                            //alert("label toString is :" + data[index].labelName);
+                            $('#labelTypeCombo').append("<option value= " + data[index].reference + ">" + data[index].labelName + "</option>")
+                            
                         });
                     },
                     error: function (data) {
                         alert('Error: ' + data);
                     }
                 });
-               
-                
             
-
+            
+               
+            $("#labelTypeCombo").change(function() {   // 2
+                //alert("this.value : "+this.value);  //this.value = reference
+                var value = this.value;
+                
+                $.each(comboData,function(index){
+                    //alert("comboData[index].reference : "+ comboData[index].reference); 
+                    inputCodeArray.length = 0;
+                    if(comboData[index].reference === value){
+                        //alert("equal!");
+                        fields = '';
+                        $.each(comboData[index].listField,function(i){               
+                            if(comboData[index].listField[i].SOURCE === 'UserInput' ){
+                                //alert('source is '+comboData[index].listField[i].SOURCE);
+                                fields = fields + '<label for="'+  comboData[index].listField[i].CODE  + '">'+
+                                        comboData[index].listField[i].CODE +':   </label><input type="text" id="' + 
+                                        comboData[index].listField[i].CODE+'" /><p></p>';
+                                inputCodeArray.push(comboData[index].listField[i].CODE);
+                            }
+                        });
+                        if(fields !== ''){
+                            fields = ' <div class="form-group" id="'+ comboData[index].reference +'" >' + fields +'</div>';
+                            $("#userInput").html(fields);
+                            //alert( "inputCodeArray.length : "+inputCodeArray.length );
+                            return false;
+                        }else{
+                            fields = ' <div class="form-group" id="'+ comboData[index].reference +'" >' + 'no need to input for this label'+'</div>';
+                            $("#userInput").html(fields);
+                            //alert( "inputCodeArray.length : "+inputCodeArray.length );
+                            return false;
+                        }
+                    }
+                });
+            });    
+            
+            //post button 
             $("#btn_print").click(function () {
                 var postMessage;
                 var ss = '';
                 var result = null;
                 var ofNum_val;
-                
                 var ip_val;
-                
                 var NAME_val;
                 var num_val;
                 var type_val;
-                var express_val;
-                var date_val;
-                var bl_val;
-
+                
+                var postInputArray = [];
+                
                 NAME_val = $('#printer_name').text();
                 ofNum_val = $('#ofNum').text();
                 num_val = $.trim($('#number').val());
-                express_val = $.trim($('#express').val());
                 type_val = $('select[name=labelTypeCombo_select] option:selected').val();
-                date_val  = $("#datepicker").datepicker( "getDate" );
-                bl_val = $.trim($('#bl').val());
-                
+               
                 if (ofNum_val === '')
                     ss = ss + "l'Of \n";
                 if (NAME_val === '')
@@ -268,17 +294,35 @@ and open the template in the editor.
                     ss = ss + "le nombre de Etiquettes \n";
                 if (type_val === '')
                     ss = ss + "le type de Etiquettes \n";
-                if (express_val === '')
-                    ss = ss + "le numéro de Expédition \n";
-                if (date_val === '')
-                    ss = ss + "la data \n";
-                if (bl_val === '')
-                    ss = ss + "le numéro de BL \n"
+                if (inputCodeArray.length !== 0){
+                    var i;
+                    for (i = 0; i < inputCodeArray.length; ++i) {
+                        //alert("input val is :" + $('#' + inputCodeArray[i]).val());
+                        if($('#' + inputCodeArray[i]).val() === '' || $('#' + inputCodeArray[i]).val() === null)
+                            ss = ss + "le valeur de "+ inputCodeArray[i] + "\n";
+                    }
+                }
                 
                 if (ss !== '') {
                     result = "Vous avez besoin de saisir/choisir ces valeurs dans les champs correspondants: \n" + ss;
                     alert(result);
                 } else {
+                    
+                    if (inputCodeArray.length !== 0){
+                        var i;
+                        
+                        for (i = 0; i < inputCodeArray.length; i++) {
+                            var inputArray = new Object();
+                            inputArray.code = inputCodeArray[i];
+                            inputArray.value = $('#' + inputCodeArray[i]).val();
+                            alert("JSON.stringify(inputArray) : "+JSON.stringify(inputArray));
+                            //postInputArray.push(JSON.stringify(inputArray));
+                            postInputArray.push(inputArray);
+                        }    
+                    }
+                    alert("postInputArray nknknknk.: "+JSON.stringify(postInputArray));
+                    
+                    
                     printerData = $.parseJSON(printerData);
                     $.each(printerData, function(index) {
                         ip_val = printerData[index].IP;
@@ -287,8 +331,7 @@ and open the template in the editor.
                             return false;
                         }
                     }); 
-                    postMessage = {ofNum: ofNum_val, ip: ip_val, num: num_val,
-                    type: type_val,  date: date_val,express: express_val, bl: bl_val};
+                    postMessage = {ofNum: ofNum_val, ip: ip_val, num: num_val, type: type_val, userInputs: postInputArray};
 
                     alert("Now launcing web service!");
                     alert(JSON.stringify(postMessage));
@@ -311,9 +354,7 @@ and open the template in the editor.
                     });
                 }
             });
-
-
-});
+    });
 
 
         </script>
