@@ -248,7 +248,7 @@ and open the template in the editor.
                             if(comboData[index].listField[i].SOURCE === 'UserInput' ){
                                 //alert('source is '+comboData[index].listField[i].SOURCE);
                                 fields = fields + '<label for="'+  comboData[index].listField[i].CODE  + '">'+
-                                        comboData[index].listField[i].CODE +':   </label><input type="text" id="' + 
+                                        comboData[index].listField[i].DESCRIPTION +':   </label><input type="text" id="' + 
                                         comboData[index].listField[i].CODE+'" /><p></p>';
                                 inputCodeArray.push(comboData[index].listField[i].CODE);
                             }
@@ -315,12 +315,12 @@ and open the template in the editor.
                             var inputArray = new Object();
                             inputArray.code = inputCodeArray[i];
                             inputArray.value = $('#' + inputCodeArray[i]).val();
-                            alert("JSON.stringify(inputArray) : "+JSON.stringify(inputArray));
+                            //alert("JSON.stringify(inputArray) : "+JSON.stringify(inputArray));
                             //postInputArray.push(JSON.stringify(inputArray));
                             postInputArray.push(inputArray);
                         }    
                     }
-                    alert("postInputArray nknknknk.: "+JSON.stringify(postInputArray));
+                    //alert("postInputArray nknknknk.: "+JSON.stringify(postInputArray));
                     
                     
                     printerData = $.parseJSON(printerData);
