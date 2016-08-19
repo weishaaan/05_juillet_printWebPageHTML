@@ -18,22 +18,48 @@ and open the template in the editor.
         <link rel="shortcut icon" href="">
         <script src="//oss.maxcdn.com/bootbox/4.2.0/bootbox.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
-        
+
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-        
+
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    
+
     </head>
 
     <body>
-        <div><div class="well">MORA - Printing Service</div></div>
-        <p></p>
-        <p><b>         Motus étiquettes de cartons</b></p>
-        <p></p>
+        <div class="well">MORA - Printing Service</div>
         <div class="container"> 
+            <p><b>Motus étiquettes de cartons</b></p>
             <div class="row">
-                <div class="col-xs-6 col-md-4"><div class="well">
-                        <table id="eventsTable" data-height="160">
+                <div class="col-xs-6 col-md-4">
+                    <div class="well">
+                        <div>
+                            <div class="form-group">
+                                <label for="number">Référence : </label>
+                                <input type="text" class="form-control" id="number">
+                            </div>
+                            <div class="form-group">
+                                <label for="number">Sous référence : </label>
+                                <input type="text" class="form-control" id="number">
+                            </div>
+                            <div class="form-group">
+                                <label for="number">Date début période : </label>
+                                <input type="text" class="form-control" id="number">
+                            </div>
+                            <div class="form-group">
+                                <label for="number">Date fin période : </label>
+                                <input type="text" class="form-control" id="number">
+                            </div>
+                            <button class="btn btn-default" type="submit" id="btn_of">
+                                    <i class="glyphicon glyphicon-search" ></i>
+                            </button>
+                        </div>
+                     </div>
+                </div>   
+                        
+                        
+                <div class="col-xs-6 col-md-4">
+                    <div class="well">       
+                        <table id="eventsTable" data-height="330">
                             <thead>
                                 <tr>
                                     <th data-field="state" data-radio="true"></th>
@@ -45,7 +71,8 @@ and open the template in the editor.
                                 </tr>
                             </thead>
                         </table>
-                    </div></div>
+                    </div>
+                </div>
 
                 <div class="col-xs-6 col-md-4"><div class="well">
                         <label>Info détaillé:</label>
@@ -82,20 +109,20 @@ and open the template in the editor.
                         <p><b>Étiquettes</b></p>
                         <p></p>
                         <!--<form role="form" id="etiquette_form"></form>-->
-                            <div class="form-group">
-                                <label for="number">Nombre:</label>
-                                <input type="text" class="form-control" id="number">
-                            </div>
-                            <div class="form-group">
-                                <label for="labelTypeCombo">Étiquette Type:</label>
-                                <select name="labelTypeCombo_select" class="selectpicker" id="labelTypeCombo">
-                                     <option value="" >Choisir un type</option>
-                                    
-                                </select>
+                        <div class="form-group">
+                            <label for="number">Nombre:</label>
+                            <input type="text" class="form-control" id="number">
+                        </div>
+                        <div class="form-group">
+                            <label for="labelTypeCombo">Étiquette Type:</label>
+                            <select name="labelTypeCombo_select" class="selectpicker" id="labelTypeCombo">
+                                <option value="" >Choisir un type</option>
+
+                            </select>
                         </div>
                     </div>
                 </div>
-       
+
                 <div class="form-group" id="model" style="display: none;">
                     <label for="xman"></label>
                     <input type="text" id="xman" />
@@ -125,61 +152,69 @@ and open the template in the editor.
                 request.send();
                 var xml = request.responseXML;
                 var config = xml.getElementsByTagName("configuration");
+                var names = config[0].getElementsByTagName("url");
+                var url_OfList = names[0].childNodes[0].nodeValue;
+                var url_allPrinters = names[1].childNodes[0].nodeValue;
+                var url_post = names[2].childNodes[0].nodeValue;
+                var url_labelType = names[3].childNodes[0].nodeValue;
+                var url_OF_post = names[5].childNodes[0].nodeValue;
                 
-                for(var i = 0; i < config.length; i++) {
-                    var url = config[i];
-                    var names = url.getElementsByTagName("url");
-                    var url_OfList = names[0].childNodes[0].nodeValue;
-                    var url_allPrinters = names[1].childNodes[0].nodeValue;
-                    var url_post = names[2].childNodes[0].nodeValue;
-                    var url_labelType = names[3].childNodes[0].nodeValue;
-                    //for(var j = 0; j < names.length; j++) {
-                      //  alert(names[j].childNodes[0].nodeValue);
-                    //}
-                }
-                //alert("url_allPrinters  :" +url_allPrinters);
-                /*$( "#datepicker" ).datepicker({
-                    changeMonth: true,//this option for allowing user to select month
-                    changeYear: true, //this option for allowing user to select from year range
-                    monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-                    monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
-                    dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
-                    dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
-                    dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-                    weekHeader: 'Sem.',
-                    dateFormat: 'dd-mm-yy',
-                    onSelect: function(dateText, inst) {
-                        date = dateText;
-                    }
-
-                });*/
-            //eventsTable    
-                $.ajax({
-                    type: "GET",
-                    url: url_OfList, //"http://localhost:8080/PrintMvnWeb/webresources/home/getOfList",
-                    dataType: "json",
-                    success: function (data) {
-                        //alert("Success!\n" + "data is:" + JSON.stringify(data));
-                        $('#eventsTable').bootstrapTable({data: data});
-                        $("#eventsTable tbody tr td input").each(function(i) {
-                            $(this).attr('name', 'ofNum');
+                $('#btn_of').click(function () {
+                    var postMessage_OF,result_check_of;
+                    var of_message='';
+                    var ref_val,sousref_val,date_start_val,date_end_val;
+                    var postOF = [];
+                    ref_val = $('#ref').text();
+                    sousref_val = $('#sousref').text();
+                    date_start_val = $('#date_start').text();
+                    date_end_val = $('#date_end').text();
+                    if(ref_val === '')
+                        of_message = of_message + "référence \n";
+                    if(sousref_val === '')
+                        of_message = of_message + "sousref \n";
+                    if(date_start_val === '')
+                        of_message = of_message + "date_start \n";
+                    if(date_end_val === '')
+                        of_message = of_message + "date_end \n";
+                    if (of_message !== '') {
+                        result_check_of = "Vous avez besoin de saisir/choisir ces valeurs dans les champs correspondants: \n" + of_message;
+                        alert(result_check_of);
+                    } else {
+                        postMessage_OF = {ref: ref_val, sousref: sousref_val, date_start: date_start_val, date_end:date_end_val };
+                        
+                        $.ajax({
+                            url: url_OF_post, //"http://localhost:8080/PrintMvnWeb/webresources/home/getFilterOF",
+                            type: 'POST',
+                            dataType: 'JSON',
+                            data: JSON.stringify(postMessage_OF),
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            success: function (result) {
+                                alert("success getFilterOF : " + JSON.stringify(result));
+                                $('#eventsTable').bootstrapTable({data: data});
+                                $("#eventsTable tbody tr td input").each(function (i) {
+                                    $(this).attr('name', 'ofNum');
+                                });
+                            },
+                            error: function (result) {
+                                alert("wrong: " + JSON.stringify(result));
+                            }
                         });
-                    },
-                    error: function (data) {
-                        alert('Error: ' + data);
                     }
                 });
-                
+
                 $('#eventsTable').on('check.bs.table', function (e, row) {
                     console.log([{ofNum: row.ofNum, reference: row.reference, sreference: row.sreference}]);
                     $('#ofNum').text(row.ofNum);
                     $('#ref').text(row.reference);
                     $('#sref').text(row.sreference);
                 });
-                
+
                 var printerData;
-                
-            //printerTable    
+
+                //printerTable    
                 $.ajax({
                     type: "GET",
                     url: url_allPrinters, //"http://localhost:8080/PrintMvnWeb/webresources/home/getAllPrinter
@@ -187,33 +222,36 @@ and open the template in the editor.
                     success: function (data) {
                         //alert("Success!\n" + "data is:" + JSON.stringify(data));
                         $('#printerTable').bootstrapTable({data: data});
-                        
+
                         printerData = JSON.stringify(data);
-                        $("#printerTable tbody tr td input").each(function(i) {
-                          //  $(this).attr('name', 'NAME');
+                        $("#printerTable tbody tr td input").each(function (i) {
+                            //  $(this).attr('name', 'NAME');
                         });
                     },
                     error: function (data) {
                         alert('Error: ' + data);
                     }
                 });
-/*
-                $('#printerTable tbody tr').each(function(){
-                    $(this).attr('name','printer');
-                });*/
-               
+                /*
+                 $('#printerTable tbody tr').each(function(){
+                 $(this).attr('name','printer');
+                 });*/
+
                 $('#printerTable').on('check.bs.table', function (e, row) {
-                    console.log("printer NAME is :"+ row.NAME);
+                    console.log("printer NAME is :" + row.NAME);
                     $('#printer_name').text(row.NAME);
                 });
-                
-                
-            //labelTypeCombo   
-                
+
+
+                //labelTypeCombo   
+
                 var comboData;
-                var fields='';
+                var fields = '';
                 var postFields;
-                var inputCodeArray=[];
+                var inputCodeArray = [];
+
+                var userInputMap = new Object(); // or var map = {};
+
                 $.ajax({
                     type: "GET",
                     url: url_labelType, // "http://localhost:8080/PrintMvnWeb/webresources/home/getLabelTypes",
@@ -221,140 +259,156 @@ and open the template in the editor.
                     success: function (data) {
                         comboData = data;
                         //alert("Success!\n" + "data is:" + JSON.stringify(data));
-                        $.each(data,function(index){
+                        $.each(data, function (index) {
                             //alert("label toString is :" + data[index].labelName);
                             $('#labelTypeCombo').append("<option value= " + data[index].reference + ">" + data[index].labelName + "</option>")
-                            
+
                         });
                     },
                     error: function (data) {
                         alert('Error: ' + data);
                     }
                 });
-            
-            
-               
-            $("#labelTypeCombo").change(function() {   // 2
-                //alert("this.value : "+this.value);  //this.value = reference
-                var value = this.value;
-                
-                $.each(comboData,function(index){
-                    //alert("comboData[index].reference : "+ comboData[index].reference); 
-                    inputCodeArray.length = 0;
-                    if(comboData[index].reference === value){
-                        //alert("equal!");
-                        fields = '';
-                        $.each(comboData[index].listField,function(i){               
-                            if(comboData[index].listField[i].SOURCE === 'UserInput' ){
-                                //alert('source is '+comboData[index].listField[i].SOURCE);
-                                fields = fields + '<label for="'+  comboData[index].listField[i].CODE  + '">'+
-                                        comboData[index].listField[i].DESCRIPTION +':   </label><input type="text" id="' + 
-                                        comboData[index].listField[i].CODE+'" /><p></p>';
-                                inputCodeArray.push(comboData[index].listField[i].CODE);
-                            }
-                        });
-                        if(fields !== ''){
-                            fields = ' <div class="form-group" id="'+ comboData[index].reference +'" >' + fields +'</div>';
-                            $("#userInput").html(fields);
-                            //alert( "inputCodeArray.length : "+inputCodeArray.length );
-                            return false;
-                        }else{
-                            fields = ' <div class="form-group" id="'+ comboData[index].reference +'" >' + 'no need to input for this label'+'</div>';
-                            $("#userInput").html(fields);
-                            //alert( "inputCodeArray.length : "+inputCodeArray.length );
-                            return false;
-                        }
-                    }
-                });
-            });    
-            
-            //post button 
-            $("#btn_print").click(function () {
-                var postMessage;
-                var ss = '';
-                var result = null;
-                var ofNum_val;
-                var ip_val;
-                var NAME_val;
-                var num_val;
-                var type_val;
-                
-                var postInputArray = [];
-                
-                NAME_val = $('#printer_name').text();
-                ofNum_val = $('#ofNum').text();
-                num_val = $.trim($('#number').val());
-                type_val = $('select[name=labelTypeCombo_select] option:selected').val();
-               
-                if (ofNum_val === '')
-                    ss = ss + "l'Of \n";
-                if (NAME_val === '')
-                    ss = ss + "l'imprimante \n";
-                if (num_val === '')
-                    ss = ss + "le nombre de Etiquettes \n";
-                if (type_val === '')
-                    ss = ss + "le type de Etiquettes \n";
-                if (inputCodeArray.length !== 0){
-                    var i;
-                    for (i = 0; i < inputCodeArray.length; ++i) {
-                        //alert("input val is :" + $('#' + inputCodeArray[i]).val());
-                        if($('#' + inputCodeArray[i]).val() === '' || $('#' + inputCodeArray[i]).val() === null)
-                            ss = ss + "le valeur de "+ inputCodeArray[i] + "\n";
-                    }
-                }
-                
-                if (ss !== '') {
-                    result = "Vous avez besoin de saisir/choisir ces valeurs dans les champs correspondants: \n" + ss;
-                    alert(result);
-                } else {
-                    
-                    if (inputCodeArray.length !== 0){
-                        var i;
-                        
-                        for (i = 0; i < inputCodeArray.length; i++) {
-                            var inputArray = new Object();
-                            inputArray.code = inputCodeArray[i];
-                            inputArray.value = $('#' + inputCodeArray[i]).val();
-                            //alert("JSON.stringify(inputArray) : "+JSON.stringify(inputArray));
-                            //postInputArray.push(JSON.stringify(inputArray));
-                            postInputArray.push(inputArray);
-                        }    
-                    }
-                    //alert("postInputArray nknknknk.: "+JSON.stringify(postInputArray));
-                    
-                    
-                    printerData = $.parseJSON(printerData);
-                    $.each(printerData, function(index) {
-                        ip_val = printerData[index].IP;
-                        if(printerData[index].NAME === NAME_val){
-                            //alert("ip_val is:"+ ip_val+",NAME in the json data is :" + printerData[index].NAME  + ", name_val is "+ NAME_val);
-                            return false;
-                        }
-                    }); 
-                    postMessage = {ofNum: ofNum_val, ip: ip_val, num: num_val, type: type_val, userInputs: postInputArray};
 
-                    alert("Now launcing web service!");
-                    alert(JSON.stringify(postMessage));
-                    $.ajax({
-                        url: url_post,//"http://localhost:8080/PrintMvnWeb/webresources/home/postPrintMessage",
-                        type: 'POST',
-                        dataType: 'text',
-                        data: JSON.stringify(postMessage),
-                        headers: {
-                            'Accept': 'text/plain',
-                            'Content-Type': 'application/json'
-                        },
-                        success: function (result) {
-                            alert("success post to web service! result is " + JSON.stringify(result));
-                            window.location.href = "retour.html";
-                        },
-                        error: function (result) {
-                            alert("wrong: " + JSON.stringify(result));
+
+
+                $("#labelTypeCombo").change(function () {   // 2
+                    //alert("this.value : "+this.value);  //this.value = reference
+                    var value = this.value;
+
+                    $.each(comboData, function (index) {
+                        //alert("comboData[index].reference : "+ comboData[index].reference); 
+                        inputCodeArray.length = 0;
+                        if (comboData[index].reference === value) {
+                            //alert("equal!");
+                            fields = '';
+                            var code,des;
+                            $.each(comboData[index].listField, function (i) {
+                                if (comboData[index].listField[i].SOURCE === 'UserInput') {
+                                    //alert('source is '+comboData[index].listField[i].SOURCE);
+                                    fields = fields + '<label for="' + comboData[index].listField[i].CODE + '">' +
+                                            comboData[index].listField[i].DESCRIPTION + ':   </label><input type="text" class="form-control" id="' +
+                                            comboData[index].listField[i].CODE + '" /><p></p>';
+                                    code = comboData[index].listField[i].CODE;
+                                    des = comboData[index].listField[i].DESCRIPTION;
+                                    userInputMap[code]=des;
+
+                                    inputCodeArray.push(code);
+                                }
+                            });
+                            if (fields !== '') {
+                                fields = ' <div class="form-group" id="' + comboData[index].reference + '" >' + fields + '</div>';
+                                $("#userInput").html(fields);
+                                //alert( "inputCodeArray.length : "+inputCodeArray.length );
+                                return false;
+                            } else {
+                                fields = ' <div class="form-group" id="' + comboData[index].reference + '" >' + 'no need to input for this label' + '</div>';
+                                $("#userInput").html(fields);
+                                //alert( "inputCodeArray.length : "+inputCodeArray.length );
+                                return false;
+                            }
                         }
                     });
-                }
+                });
+
+                //post button 
+                $("#btn_print").click(function () {
+                    var postMessage;
+                    var ss = '';
+                    var result = null;
+                    var ofNum_val;
+                    var ip_val;
+                    var NAME_val;
+                    var num_val;
+                    var type_val;
+                    var postInputArray = [];
+                    
+                    NAME_val = $('#printer_name').text();
+                    ofNum_val = $('#ofNum').text();
+                    num_val = $.trim($('#number').val());
+                    type_val = $('select[name=labelTypeCombo_select] option:selected').val();
+
+                    if (ofNum_val === '')
+                        ss = ss + "l'Of \n";
+                    if (NAME_val === '')
+                        ss = ss + "l'imprimante \n";
+                    if (num_val === '')
+                        ss = ss + "le nombre de Etiquettes \n";
+                    if (num_val === '')
+                        ss = ss + "le nombre de Etiquettes \n";
+                    if (num_val % 1 === 0) {
+                        if(num_val < 1){
+                            ss = ss + "le nombre de Etiquettes doit être plus de 1 \n";}
+                    }else {
+                        ss = ss + "le nombre de Etiquettes doit être un nombre entier \n";
+                    }
+                    
+                    if (type_val === '')
+                        ss = ss + "le type de Etiquettes \n";
+                    if (inputCodeArray.length !== 0) {
+                        var i;
+                        for (i = 0; i < inputCodeArray.length; ++i) {
+                            //alert("input val is :" + $('#' + inputCodeArray[i]).val());
+                            if ($('#' + inputCodeArray[i]).val() === '' || $('#' + inputCodeArray[i]).val() === null)
+                                
+                                ss = ss + "le valeur de " + userInputMap[inputCodeArray[i]] + "\n";
+                                //ss = ss + "le valeur de " + inputCodeArray[i] + "\n";
+                        }
+                    }
+                    
+
+                    if (ss !== '') {
+                        result = "Vous avez besoin de saisir/choisir ces valeurs dans les champs correspondants: \n" + ss;
+                        alert(result);
+                    } else {
+
+                        if (inputCodeArray.length !== 0) {
+                            var i;
+
+                            for (i = 0; i < inputCodeArray.length; i++) {
+                                var inputArray = new Object();
+                                inputArray.code = inputCodeArray[i];
+                                inputArray.value = $('#' + inputCodeArray[i]).val();
+                                //alert("JSON.stringify(inputArray) : "+JSON.stringify(inputArray));
+                                //postInputArray.push(JSON.stringify(inputArray));
+                                postInputArray.push(inputArray);
+                            }
+                        }
+                        //alert("postInputArray nknknknk.: "+JSON.stringify(postInputArray));
+
+
+                        printerData = $.parseJSON(printerData);
+                        $.each(printerData, function (index) {
+                            ip_val = printerData[index].IP;
+                            if (printerData[index].NAME === NAME_val) {
+                                //alert("ip_val is:"+ ip_val+",NAME in the json data is :" + printerData[index].NAME  + ", name_val is "+ NAME_val);
+                                return false;
+                            }
+                        });
+                        postMessage = {ofNum: ofNum_val, ip: ip_val, num: num_val, type: type_val, userInputs: postInputArray};
+
+                        alert("Now launcing web service!");
+                        alert(JSON.stringify(postMessage));
+                        $.ajax({
+                            url: url_post, //"http://localhost:8080/PrintMvnWeb/webresources/home/postPrintMessage",
+                            type: 'POST',
+                            dataType: 'text',
+                            data: JSON.stringify(postMessage),
+                            headers: {
+                                'Accept': 'text/plain',
+                                'Content-Type': 'application/json'
+                            },
+                            success: function (result) {
+                                alert("success post to web service! result is " + JSON.stringify(result));
+                                window.location.href = "retour.html";
+                            },
+                            error: function (result) {
+                                alert("wrong: " + JSON.stringify(result));
+                            }
+                        });
+                    }
+                });
             });
-    });
 
 
         </script>

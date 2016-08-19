@@ -21,16 +21,43 @@ and open the template in the editor.
     </head>
 
     <body>
-        <div><div class="well">MORA - Printing Service</div></div>
-        <p></p>
-        <p><b>         Motus étiquettes de cartons</b></p>
-        <p></p>
+        <div class="well">MORA - Printing Service</div>
         <div class="container"> 
+            <p><b>Motus étiquettes de cartons</b></p>
             <div class="row">
-                <div class="col-xs-6"><div class="well"> 
-                <button onclick="window.location.href='index.html'">Click me</button>
-    			</div></div>                
+                <div class="well" id="retourData"> 
+                </div>
             </div>
-        </div>    
+
+            <div class="row">
+                <div class="well"> 
+                    <button onclick="window.location.href='index.html'">Retour</button>
+                </div>
+            </div>
+        </div>   
+        <script>
+            $(document).ready(function () {
+                var request = new XMLHttpRequest();
+                request.open("GET", "config.xml", false);
+                request.send();
+                var xml = request.responseXML;
+                var config = xml.getElementsByTagName("configuration");
+                var names = config[0].getElementsByTagName("url");
+                var url_retourData = names[4].childNodes[0].nodeValue;
+                
+                $.ajax({  
+                    type: "GET",  
+                    url:url_retourData,
+                    dataType:"text",
+                    success: function(data){  
+                      //alert("Success:\n '" + data ); 
+                        $("#retourData").html("<b>Données du travail imprimant  : </b> <p> </p>" + data);
+                    },  
+                    error: function(data){  
+                        alert('Error: ' + data);  
+                    }  
+                }); 
+            });
+        </script>
     </body>
 </html>

@@ -9,5 +9,7 @@
     
     <url>http://localhost:8080/PrintMvnWeb/webresources/home/getLabelTypes</url>
 
+    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getRetourData</url>
     
+    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getFilterOF</url>
 </configuration>
