@@ -35,19 +35,19 @@ and open the template in the editor.
                         <div>
                             <div class="form-group">
                                 <label for="number">Référence : </label>
-                                <input type="text" class="form-control" id="number">
+                                <input type="text" class="form-control" id="ref_of">
                             </div>
                             <div class="form-group">
                                 <label for="number">Sous référence : </label>
-                                <input type="text" class="form-control" id="number">
+                                <input type="text" class="form-control" id="sous_ref_of">
                             </div>
                             <div class="form-group">
                                 <label for="number">Date début période : </label>
-                                <input type="text" class="form-control" id="number">
+                                <input type="text" class="form-control" id="date_start_of">
                             </div>
                             <div class="form-group">
                                 <label for="number">Date fin période : </label>
-                                <input type="text" class="form-control" id="number">
+                                <input type="text" class="form-control" id="date_end_of">
                             </div>
                             <button class="btn btn-default" type="submit" id="btn_of">
                                     <i class="glyphicon glyphicon-search" ></i>
@@ -159,41 +159,45 @@ and open the template in the editor.
                 var url_labelType = names[3].childNodes[0].nodeValue;
                 var url_OF_post = names[5].childNodes[0].nodeValue;
                 
+                $("#date_start_of").datepicker({
+                    numberOfMonths: 2,
+                    onSelect: function(selected) {
+                      $("#date_end_of").datepicker("option","minDate", selected)
+                    }
+                });
+                $("#date_end_of").datepicker({ 
+                    numberOfMonths: 2,
+                    onSelect: function(selected) {
+                       $("#date_start_of").datepicker("option","maxDate", selected)
+                    }
+                });  
+                
                 $('#btn_of').click(function () {
                     var postMessage_OF,result_check_of;
                     var of_message='';
                     var ref_val,sousref_val,date_start_val,date_end_val;
                     var postOF = [];
-                    ref_val = $('#ref').text();
-                    sousref_val = $('#sousref').text();
-                    date_start_val = $('#date_start').text();
-                    date_end_val = $('#date_end').text();
-                    if(ref_val === '')
-                        of_message = of_message + "référence \n";
-                    if(sousref_val === '')
-                        of_message = of_message + "sousref \n";
-                    if(date_start_val === '')
-                        of_message = of_message + "date_start \n";
-                    if(date_end_val === '')
-                        of_message = of_message + "date_end \n";
-                    if (of_message !== '') {
-                        result_check_of = "Vous avez besoin de saisir/choisir ces valeurs dans les champs correspondants: \n" + of_message;
+                    ref_val = $('#ref_of').val();
+                    sousref_val = $('#sous_ref_of').val();
+                    date_start_val = $('#date_start_of').datepicker().val() ;
+                    date_end_val = $('#date_end_of').datepicker().val() ;
+                    var path;
+                    
+                    if (ref_val === '') {
+                        result_check_of = "Vous avez besoin de saisir le valeur de Référence pour filtrer OF liste";
                         alert(result_check_of);
                     } else {
-                        postMessage_OF = {ref: ref_val, sousref: sousref_val, date_start: date_start_val, date_end:date_end_val };
+                        path = "?ref=" + ref_val + "&sref=" + sousref_val + "&date_start=" + date_start_val +"&date_end=" + date_end_val;
                         
                         $.ajax({
-                            url: url_OF_post, //"http://localhost:8080/PrintMvnWeb/webresources/home/getFilterOF",
-                            type: 'POST',
+                            url: url_OfList+path, 
+                            type: 'GET',
                             dataType: 'JSON',
-                            data: JSON.stringify(postMessage_OF),
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            },
                             success: function (result) {
-                                alert("success getFilterOF : " + JSON.stringify(result));
-                                $('#eventsTable').bootstrapTable({data: data});
+                                //alert("success getFilterOF : " + JSON.stringify(result));
+                                $('#eventsTable').bootstrapTable();
+                                $('#eventsTable').bootstrapTable('removeAll');
+                                $('#eventsTable').bootstrapTable('append', result);
                                 $("#eventsTable tbody tr td input").each(function (i) {
                                     $(this).attr('name', 'ofNum');
                                 });
@@ -313,7 +317,7 @@ and open the template in the editor.
 
                 //post button 
                 $("#btn_print").click(function () {
-                    var postMessage;
+                    
                     var ss = '';
                     var result = null;
                     var ofNum_val;
@@ -321,7 +325,6 @@ and open the template in the editor.
                     var NAME_val;
                     var num_val;
                     var type_val;
-                    var postInputArray = [];
                     
                     NAME_val = $('#printer_name').text();
                     ofNum_val = $('#ofNum').text();
@@ -350,32 +353,25 @@ and open the template in the editor.
                         for (i = 0; i < inputCodeArray.length; ++i) {
                             //alert("input val is :" + $('#' + inputCodeArray[i]).val());
                             if ($('#' + inputCodeArray[i]).val() === '' || $('#' + inputCodeArray[i]).val() === null)
-                                
                                 ss = ss + "le valeur de " + userInputMap[inputCodeArray[i]] + "\n";
                                 //ss = ss + "le valeur de " + inputCodeArray[i] + "\n";
                         }
                     }
-                    
-
                     if (ss !== '') {
                         result = "Vous avez besoin de saisir/choisir ces valeurs dans les champs correspondants: \n" + ss;
                         alert(result);
                     } else {
-
+                        var x='';
                         if (inputCodeArray.length !== 0) {
                             var i;
-
                             for (i = 0; i < inputCodeArray.length; i++) {
-                                var inputArray = new Object();
-                                inputArray.code = inputCodeArray[i];
-                                inputArray.value = $('#' + inputCodeArray[i]).val();
-                                //alert("JSON.stringify(inputArray) : "+JSON.stringify(inputArray));
-                                //postInputArray.push(JSON.stringify(inputArray));
-                                postInputArray.push(inputArray);
+                                x = x + "userInputs=" + inputCodeArray[i] +"&userInputs=" + $('#' + inputCodeArray[i]).val();
+                                if((i+1)<inputCodeArray.length){
+                                    x = x + "&";
+                                }
                             }
                         }
-                        //alert("postInputArray nknknknk.: "+JSON.stringify(postInputArray));
-
+                        //alert("inputs : " + x);
 
                         printerData = $.parseJSON(printerData);
                         $.each(printerData, function (index) {
@@ -385,19 +381,16 @@ and open the template in the editor.
                                 return false;
                             }
                         });
-                        postMessage = {ofNum: ofNum_val, ip: ip_val, num: num_val, type: type_val, userInputs: postInputArray};
-
-                        alert("Now launcing web service!");
-                        alert(JSON.stringify(postMessage));
+                        
+                        var postMessage;
+                        
+                        postMessage = "?ofNum="+ofNum_val+"&ip="+ip_val+"&num="+num_val+"&type="+type_val+"&"+ x;
+                        //alert("Now launcing web service!");
+                        //alert(JSON.stringify(postMessage));
                         $.ajax({
-                            url: url_post, //"http://localhost:8080/PrintMvnWeb/webresources/home/postPrintMessage",
-                            type: 'POST',
+                            url: url_post + postMessage, 
+                            type: 'GET',
                             dataType: 'text',
-                            data: JSON.stringify(postMessage),
-                            headers: {
-                                'Accept': 'text/plain',
-                                'Content-Type': 'application/json'
-                            },
                             success: function (result) {
                                 alert("success post to web service! result is " + JSON.stringify(result));
                                 window.location.href = "retour.html";
@@ -409,8 +402,6 @@ and open the template in the editor.
                     }
                 });
             });
-
-
         </script>
 
     </body>
