@@ -65,7 +65,6 @@ and open the template in the editor.
                                     <th data-field="state" data-radio="true"></th>
                                     <th data-field="ofNum">ofNum</th>
                                     <!--
-                                    
                                     <th data-field="sreference">sreference</th>
                                     -->
                                 </tr>
@@ -74,9 +73,11 @@ and open the template in the editor.
                     </div>
                 </div>
 
-                <div class="col-xs-6 col-md-4"><div class="well">
+                <div class="col-xs-6 col-md-4">
+                    <div class="well">
                         <label>Info détaillé:</label>
                         <p></p>
+                        <!--
                         <label for="ofNum">ofNum:</label>
                         <label id="ofNum"></label>
                         <p></p>
@@ -86,22 +87,34 @@ and open the template in the editor.
                         <label for="ref">sReference: </label>
                         <label id="sref"></label>
                         <p></p>
-                    </div></div>
-
-                <div class="col-xs-6 col-md-4"><div class="well">
-                        <p></p>
-                        <table id="printerTable" data-height="160">
-                            <thead>
-                                <tr>
-                                    <th data-field="state" data-radio="true"></th>
-                                    <th data-field="NAME">Imprimantes</th>
-                                </tr>
-                            </thead>
+                        -->
+                        <table class="table">
+                            <tr>
+                                <th><b>ofNum:</b></th>
+                                <td id="ofNum"></td> 
+                            </tr>
+                            <tr>
+                                <th><b>Ref:</b></th>
+                                <td id="ref"></td> 
+                            </tr>
+                            <tr>
+                                <th>sReference:</th>
+                                <td id="sref"></td>
+                            </tr>
+                            
                         </table>
-                    </div></div>
+                    </div>
+                </div>
 
-                <div style="display: none;">
-                    <label id="printer_name"></label>
+                <div class="col-xs-6 col-md-4">
+                    <div class="well">
+                        <div class="form-group">
+                            <label for="printerCombo">Imprimantes :</label>
+                            <select name="printerCombo_select" class="form-control" class="selectpicker" id="printerCombo">
+                                <option value="" >Choisir un imprimante</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col-xs-6 col-md-4">
@@ -115,17 +128,11 @@ and open the template in the editor.
                         </div>
                         <div class="form-group">
                             <label for="labelTypeCombo">Étiquette Type:</label>
-                            <select name="labelTypeCombo_select" class="selectpicker" id="labelTypeCombo">
+                            <select name="labelTypeCombo_select" class="form-control" class="selectpicker" id="labelTypeCombo">
                                 <option value="" >Choisir un type</option>
-
                             </select>
                         </div>
                     </div>
-                </div>
-
-                <div class="form-group" id="model" style="display: none;">
-                    <label for="xman"></label>
-                    <input type="text" id="xman" />
                 </div>
 
                 <div class="col-xs-6 col-md-4">
@@ -133,7 +140,6 @@ and open the template in the editor.
                         <p><b>Champs à compléter</b></p>
                         <p ></p>
                         <div id="userInput"></div>  
-
                     </div>
                 </div>
                 <div class="col-xs-6 col-md-4">
@@ -219,39 +225,30 @@ and open the template in the editor.
                 var printerData;
 
                 //printerTable    
+                
+                //[{"DPI":0,"IP":"192.168.1.1","NAME":"printer1","TYPE":"type1","STATUS":true},
                 $.ajax({
                     type: "GET",
                     url: url_allPrinters, //"http://localhost:8080/PrintMvnWeb/webresources/home/getAllPrinter
                     dataType: "json",
+                    
                     success: function (data) {
-                        //alert("Success!\n" + "data is:" + JSON.stringify(data));
-                        $('#printerTable').bootstrapTable({data: data});
-
                         printerData = JSON.stringify(data);
-                        $("#printerTable tbody tr td input").each(function (i) {
-                            //  $(this).attr('name', 'NAME');
+                        //alert("Success!\n" + "data is:" + JSON.stringify(data));
+                        $.each(data, function (index) {
+                            $('#printerCombo').append("<option value= " + data[index].IP + ">" + data[index].NAME + "</option>")
                         });
                     },
+                    
                     error: function (data) {
                         alert('Error: ' + data);
                     }
                 });
-                /*
-                 $('#printerTable tbody tr').each(function(){
-                 $(this).attr('name','printer');
-                 });*/
-
-                $('#printerTable').on('check.bs.table', function (e, row) {
-                    console.log("printer NAME is :" + row.NAME);
-                    $('#printer_name').text(row.NAME);
-                });
-
-
+                
                 //labelTypeCombo   
 
                 var comboData;
                 var fields = '';
-                var postFields;
                 var inputCodeArray = [];
 
                 var userInputMap = new Object(); // or var map = {};
@@ -273,8 +270,6 @@ and open the template in the editor.
                         alert('Error: ' + data);
                     }
                 });
-
-
 
                 $("#labelTypeCombo").change(function () {   // 2
                     //alert("this.value : "+this.value);  //this.value = reference
@@ -322,21 +317,19 @@ and open the template in the editor.
                     var result = null;
                     var ofNum_val;
                     var ip_val;
-                    var NAME_val;
                     var num_val;
                     var type_val;
                     
-                    NAME_val = $('#printer_name').text();
+                    ip_val = $('select[name=printerCombo_select] option:selected').val();
                     ofNum_val = $('#ofNum').text();
                     num_val = $.trim($('#number').val());
                     type_val = $('select[name=labelTypeCombo_select] option:selected').val();
 
+                        
                     if (ofNum_val === '')
                         ss = ss + "l'Of \n";
-                    if (NAME_val === '')
+                    if (ip_val === '')
                         ss = ss + "l'imprimante \n";
-                    if (num_val === '')
-                        ss = ss + "le nombre de Etiquettes \n";
                     if (num_val === '')
                         ss = ss + "le nombre de Etiquettes \n";
                     if (num_val % 1 === 0) {
@@ -371,16 +364,6 @@ and open the template in the editor.
                                 }
                             }
                         }
-                        //alert("inputs : " + x);
-
-                        printerData = $.parseJSON(printerData);
-                        $.each(printerData, function (index) {
-                            ip_val = printerData[index].IP;
-                            if (printerData[index].NAME === NAME_val) {
-                                //alert("ip_val is:"+ ip_val+",NAME in the json data is :" + printerData[index].NAME  + ", name_val is "+ NAME_val);
-                                return false;
-                            }
-                        });
                         
                         var postMessage;
                         
