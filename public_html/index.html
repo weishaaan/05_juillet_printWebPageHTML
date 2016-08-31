@@ -385,6 +385,17 @@ and open the template in the editor.
                             }
                         }
                         
+                        //alert("inputs : " + x);
+
+                        printerData = $.parseJSON(printerData);
+                        $.each(printerData, function (index) {
+                            ip_val = printerData[index].IP;
+                            if (printerData[index].NAME === NAME_val) {
+                                //alert("ip_val is:"+ ip_val+",NAME in the json data is :" + printerData[index].NAME  + ", name_val is "+ NAME_val);
+                                return false;
+                            }
+                        });
+                        
                         var postMessage;
                         
                         postMessage = "?ofNum="+ofNum_val+"&ip="+ip_val+"&num="+num_val+"&type="+type_val+"&"+ x;
