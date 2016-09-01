@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getOfList</url>
+    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getOfList2</url>
     
     <url>http://localhost:8080/PrintMvnWeb/webresources/home/getAllPrinter</url>
     

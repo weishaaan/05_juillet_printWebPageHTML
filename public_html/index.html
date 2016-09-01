@@ -48,127 +48,119 @@ and open the template in the editor.
     <body>
         <div class="well">MORA - Printing Service</div>
         <div class="container"> 
-            <p><b>Motus étiquettes de cartons</b></p>
+            
+            <div class="row">       
+                <div class="well">
+                    <p><b>Impression des étiquettes de carton</b></p>
+                </div>
+            </div>
+            
             <div class="row">
                 <div class="col-xs-6 col-md-4">
-                    <div class="well">
-                        <div>
-                            <div class="form-group">
-                                <label for="number">Référence : </label>
-                                <input type="text" class="form-control" id="ref_of">
-                            </div>
-                            <div class="form-group">
-                                <label for="number">Sous référence : </label>
-                                <input type="text" class="form-control" id="sous_ref_of">
-                            </div>
-                            <div class="form-group">
-                                <label for="number">Date début période : </label>
-                                <input type="text" class="form-control" id="date_start_of">
-                            </div>
-                            <div class="form-group">
-                                <label for="number">Date fin période : </label>
-                                <input type="text" class="form-control" id="date_end_of">
-                            </div>
-                            <button class="btn btn-default" type="submit" id="btn_of">
-                                    <i class="glyphicon glyphicon-search" ></i>
-                            </button>
-                        </div>
-                     </div>
-                </div>   
-                        
-                        
+                    <input type="text" id="num_of_cherche" value="Numéro d'OF">
+                    <button class="btn btn-default" type="submit" id="btn_num_of">
+                        <i class="glyphicon glyphicon-search" ></i>
+                    </button>
+                    <p></p>
+                    <p></p>
+                </div>
+            </div>
+            
+            <div class="well">   
+                <div class="row">
+                    <p><b>Détail OF</b></p>
+                </div>
+                <div class="row">
+                    <table id="of_table" class="table">
+                        <tr>
+                            <th>Numéro d'OF</th>
+                            <td id="num_of"></td>
+                            <th>Référence</th>
+                            <td id="ref"></td>
+                            <th>Sous-Référence</th>
+                            <td id="sref"></td>
+                        </tr>
+                        <tr>
+                            <th>Qté Of</th>
+                            <td id="qte_of"></td> 
+                            <th>Désignation de l'article</th>
+                            <td id="des_art"></td>
+                            <th></th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>Date Of</th>
+                            <td id="date_of"></td>
+                            <th>Nb articles / carton</th>
+                            <td id="nb_art"></td>
+                            <th></th>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="row">
                 <div class="col-xs-6 col-md-4">
-                    <div class="well">       
-                        <table id="eventsTable" data-height="330">
-                            <thead>
-                                <tr>
-                                    <th data-field="state" data-radio="true"></th>
-                                    <th data-field="ofNum">ofNum</th>
-                                    <!--
-                                    <th data-field="sreference">sreference</th>
-                                    -->
-                                </tr>
-                            </thead>
-                        </table>
+                    <div class="form-group">
+                        <label for="labelTypeCombo">Étiquette Type:</label>
+                        <select name="labelTypeCombo_select" class="form-control" class="selectpicker" id="labelTypeCombo">
+                            <option value="" >Choisir un type</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="printerCombo">Imprimantes :</label>
+                        <select name="printerCombo_select" class="form-control" class="selectpicker" id="printerCombo">
+                            <option value="" >Choisir un imprimante</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="col-xs-6 col-md-4">
-                    <div class="well">
-                        <label>Info détaillé:</label>
-                        <p></p>
-                        <!--
-                        <label for="ofNum">ofNum:</label>
-                        <label id="ofNum"></label>
-                        <p></p>
-                        <label for="ref">Ref: </label>
-                        <label id="ref"></label>
-                        <p></p>
-                        <label for="ref">sReference: </label>
-                        <label id="sref"></label>
-                        <p></p>
-                        -->
-                        <table class="table">
-                            <tr>
-                                <th><b>ofNum:</b></th>
-                                <td id="ofNum"></td> 
-                            </tr>
-                            <tr>
-                                <th><b>Ref:</b></th>
-                                <td id="ref"></td> 
-                            </tr>
-                            <tr>
-                                <th>sReference:</th>
-                                <td id="sref"></td>
-                            </tr>
-                            
-                        </table>
-                    </div>
-                </div>
-
-                <div class="col-xs-6 col-md-4">
-                    <div class="well">
-                        <div class="form-group">
-                            <label for="printerCombo">Imprimantes :</label>
-                            <select name="printerCombo_select" class="form-control" class="selectpicker" id="printerCombo">
-                                <option value="" >Choisir un imprimante</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-6 col-md-4">
-                    <div class="well">
-                        <p><b>Étiquettes</b></p>
-                        <p></p>
-                        <!--<form role="form" id="etiquette_form"></form>-->
-                        <div class="form-group">
-                            <label for="number">Nombre:</label>
-                            <input type="text" class="form-control" id="number">
-                        </div>
-                        <div class="form-group">
-                            <label for="labelTypeCombo">Étiquette Type:</label>
-                            <select name="labelTypeCombo_select" class="form-control" class="selectpicker" id="labelTypeCombo">
-                                <option value="" >Choisir un type</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-6 col-md-4">
-                    <div class="well">
+                    <div>
                         <p><b>Champs à compléter</b></p>
                         <p ></p>
-                        <div id="userInput"></div>  
+                        <div id="userInput"></div> 
                     </div>
                 </div>
+
                 <div class="col-xs-6 col-md-4">
-                    <div >
-                        <button id="btn_print" >Imprimer</button>
+                    <div class="form-group">
+                        <label for="nbr_label">Nbr étiquettes à imprimer:</label>
+                        <input type="text" class="form-control" id="nbr_label">
+                    </div>
+                    <div class="form-group">
+                        <label for="nbr_art">Nbr articles / carton</label>
+                        <input type="text" class="form-control" id="nbr_art">
+                    </div>
+                    <div class="form-group">
+                        <label for="nbr_label_h">Nbr étiquettes housse</label>
+                        <input type="text" class="form-control" id="nbr_label_h" value="empty field">
+                    </div>
+                    <div class="form-group">
+                        <label for="nbr_label_p">Nbr étiquettes prélévement</label>
+                        <input type="text" class="form-control" id="nbr_label_p" value="empty field">
                     </div>
                 </div>
             </div>
+
+
+            <div>
+                <button id="btn_print" style="display: block; width: 100%;">Imprimer</button>
+            </div>
+            
+            <div>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+            </div>
         </div>
+
+    </div>
+
 
         <script>
             $(document).ready(function () {
@@ -184,56 +176,57 @@ and open the template in the editor.
                 var url_post = names[2].childNodes[0].nodeValue;
                 var url_labelType = names[3].childNodes[0].nodeValue;
                 var url_OF_post = names[5].childNodes[0].nodeValue;
-                
-                $("#date_start_of").datepicker({
-                    numberOfMonths: 2,
-                    onSelect: function(selected) {
-                      $("#date_end_of").datepicker("option","minDate", selected)
-                    }
-                });
-                $("#date_end_of").datepicker({ 
-                    numberOfMonths: 2,
-                    onSelect: function(selected) {
-                       $("#date_start_of").datepicker("option","maxDate", selected)
-                    }
-                });  
-                
-                $('#btn_of').click(function () {
-                    var postMessage_OF,result_check_of;
-                    var of_message='';
-                    var ref_val,sousref_val,date_start_val,date_end_val;
-                    var postOF = [];
-                    ref_val = $('#ref_of').val();
-                    sousref_val = $('#sous_ref_of').val();
-                    date_start_val = $('#date_start_of').datepicker().val() ;
-                    date_end_val = $('#date_end_of').datepicker().val() ;
-                    var path;
-                    
-                    if (ref_val === '') {
-                        result_check_of = "Vous avez besoin de saisir le valeur de Référence pour filtrer OF liste";
-                        alert(result_check_of);
-                    } else {
-                        path = "?ref=" + ref_val + "&sref=" + sousref_val + "&date_start=" + date_start_val +"&date_end=" + date_end_val;
-                        
+                 
+                var num_of_c,popout;
+                popout = "Vous avez besoin de saisir le valide valeur du numéro d'OF";
+                $('#btn_num_of').click(function () {
+                    num_of_c = $('#num_of_cherche').val();
+                    if(!$.trim(num_of_c)|| num_of_c === null || num_of_c ==="Numéro d'OF"){
+                        alert(popout);
+                    }else{
                         $.ajax({
-                            url: url_OfList+path, 
+                            url: url_OfList + "?ofNum=" + num_of_c, 
                             type: 'GET',
                             dataType: 'JSON',
                             success: function (result) {
                                 //alert("success getFilterOF : " + JSON.stringify(result));
-                                $('#eventsTable').bootstrapTable();
-                                $('#eventsTable').bootstrapTable('removeAll');
-                                $('#eventsTable').bootstrapTable('append', result);
-                                $("#eventsTable tbody tr td input").each(function (i) {
-                                    $(this).attr('name', 'ofNum');
-                                });
+                                if (typeof(result) == 'undefined') {
+                                    $('#num_of').html();
+                                    $('#ref').html();
+                                    $('#sref').html();
+                                    $('#qte_of').html();
+                                    $('#des_art').html();
+                                    $('#date_of').html();
+                                    $('#nb_art').html();
+                                    alert("test");
+                                }else{
+                                    $('#num_of').html(result.ofNum);
+                                    $('#ref').html(result.reference);
+                                    $('#sref').html(result.sreference);
+                                    $('#qte_of').html(result.qteOfEntete);
+                                    $('#des_art').html(result.artDesignation);
+                                    $('#date_of').html(result.datePlainfDebut);
+                                    $('#nb_art').html(result.nbArtPerContainer);
+                                    
+                                    $("#nbr_label").val(result.qteOfEntete/result.nbArtPerContainer);
+                                    $("#nbr_art").val(result.nbArtPerContainer);
+                                }
                             },
                             error: function (result) {
+                                $('#num_of').html();
+                                $('#ref').html();
+                                $('#sref').html();
+                                $('#qte_of').html();
+                                $('#des_art').html();
+                                $('#date_of').html();
+                                $('#nb_art').html();
                                 alert("wrong: " + JSON.stringify(result));
+                                
                             }
                         });
-                    }
+                    }    
                 });
+                
 
                 $('#eventsTable').on('check.bs.table', function (e, row) {
                     console.log([{ofNum: row.ofNum, reference: row.reference, sreference: row.sreference}]);
