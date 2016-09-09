@@ -54,13 +54,17 @@ and open the template in the editor.
                     <p><b>Impression des étiquettes de carton</b></p>
                 </div>
             </div>
-            
+
             <div class="row">
-                <div class="col-xs-6 col-md-4">
-                    <input type="text" id="num_of_cherche" value="Numéro d'OF">
-                    <button class="btn btn-default" type="submit" id="btn_num_of">
-                        <i class="glyphicon glyphicon-search" ></i>
-                    </button>
+                <div class="col-xs-6 col-md-6">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <input type="text" id="num_of_cherche" class="form-control" value="Numéro d'OF">
+                            <button class="btn btn-default" type="submit" id="btn_num_of">
+                                <i class="glyphicon glyphicon-search" ></i>
+                            </button>
+                        </div>
+                    </div>
                     <p></p>
                     <p></p>
                 </div>
@@ -175,22 +179,22 @@ and open the template in the editor.
                 var url_allPrinters = names[1].childNodes[0].nodeValue;
                 var url_post = names[2].childNodes[0].nodeValue;
                 var url_labelType = names[3].childNodes[0].nodeValue;
-                var url_OF_post = names[5].childNodes[0].nodeValue;
                  
                 var num_of_c,popout;
                 popout = "Vous avez besoin de saisir le valide valeur du numéro d'OF";
+                
                 $('#btn_num_of').click(function () {
                     num_of_c = $('#num_of_cherche').val();
                     if(!$.trim(num_of_c)|| num_of_c === null || num_of_c ==="Numéro d'OF"){
                         alert(popout);
                     }else{
                         $.ajax({
-                            url: url_OfList + "?ofNum=" + num_of_c, 
+                            url: url_OfList + "/" + num_of_c, //"?ofNum=" + num_of_c, 
                             type: 'GET',
                             dataType: 'JSON',
                             success: function (result) {
                                 //alert("success getFilterOF : " + JSON.stringify(result));
-                                if (typeof(result) == 'undefined') {
+                                if (typeof(result) === 'undefined') {
                                     $('#num_of').html();
                                     $('#ref').html();
                                     $('#sref').html();
@@ -207,7 +211,6 @@ and open the template in the editor.
                                     $('#des_art').html(result.artDesignation);
                                     $('#date_of').html(result.datePlainfDebut);
                                     $('#nb_art').html(result.nbArtPerContainer);
-                                    
                                     $("#nbr_label").val(result.qteOfEntete/result.nbArtPerContainer);
                                     $("#nbr_art").val(result.nbArtPerContainer);
                                 }
@@ -328,32 +331,36 @@ and open the template in the editor.
                     
                     var ss = '';
                     var result = null;
-                    var ofNum_val;
-                    var ip_val;
-                    var num_val;
-                    var type_val;
                     
-                    ip_val = $('select[name=printerCombo_select] option:selected').val();
-                    ofNum_val = $('#ofNum').text();
-                    num_val = $.trim($('#number').val());
+                    var ofNum_val;
+                    var type_val;
+                    var ip_val;
+                    var nbr_label;
+                    var nbr_art;
+                    var nbr_label_h;
+                    var nbr_label_p;
+                    
+                    
+                    
+                    
+                    ofNum_val = $('#num_of').text();
                     type_val = $('select[name=labelTypeCombo_select] option:selected').val();
-
-                        
+                    ip_val = $('select[name=printerCombo_select] option:selected').val();
+                    //alert("ip val is :"+ ip_val);
+                    
+                    nbr_label = $('#nbr_label').val();
+                    //alert("nbr label is :"+nbr_label);
+                    
+                    nbr_art = $('#nbr_art').val();
+                    nbr_label_h = $('#nbr_label_h').val();
+                    nbr_label_p = $('#nbr_label_p').val();
+                    
                     if (ofNum_val === '')
                         ss = ss + "l'Of \n";
-                    if (ip_val === '')
-                        ss = ss + "l'imprimante \n";
-                    if (num_val === '')
-                        ss = ss + "le nombre de Etiquettes \n";
-                    if (num_val % 1 === 0) {
-                        if(num_val < 1){
-                            ss = ss + "le nombre de Etiquettes doit être plus de 1 \n";}
-                    }else {
-                        ss = ss + "le nombre de Etiquettes doit être un nombre entier \n";
-                    }
-                    
                     if (type_val === '')
                         ss = ss + "le type de Etiquettes \n";
+                    if (ip_val === '')
+                        ss = ss + "l'imprimante \n";
                     if (inputCodeArray.length !== 0) {
                         var i;
                         for (i = 0; i < inputCodeArray.length; ++i) {
@@ -363,6 +370,11 @@ and open the template in the editor.
                                 //ss = ss + "le valeur de " + inputCodeArray[i] + "\n";
                         }
                     }
+                    if(nbr_label_h === "empty field")
+                        nbr_label_h = 0;
+                    if(nbr_label_p === "empty field")
+                        nbr_label_p = 0;
+                    
                     if (ss !== '') {
                         result = "Vous avez besoin de saisir/choisir ces valeurs dans les champs correspondants: \n" + ss;
                         alert(result);
@@ -376,23 +388,20 @@ and open the template in the editor.
                                     x = x + "&";
                                 }
                             }
+                            //alert("x is :"+x);
                         }
                         
-                        //alert("inputs : " + x);
-
-                        printerData = $.parseJSON(printerData);
-                        $.each(printerData, function (index) {
-                            ip_val = printerData[index].IP;
-                            if (printerData[index].NAME === NAME_val) {
-                                //alert("ip_val is:"+ ip_val+",NAME in the json data is :" + printerData[index].NAME  + ", name_val is "+ NAME_val);
-                                return false;
-                            }
-                        });
-                        
                         var postMessage;
-                        
-                        postMessage = "?ofNum="+ofNum_val+"&ip="+ip_val+"&num="+num_val+"&type="+type_val+"&"+ x;
-                        //alert("Now launcing web service!");
+                        postMessage = "?ofNum=" + ofNum_val
+                            +"&type=" + type_val
+                            +"&" + x
+                            +"&ip=" + ip_val
+                            +"&nbr_label=" + nbr_label
+                            +"&nbr_art=" + nbr_art
+                            +"&nbr_label_h=" + nbr_label_h
+                            +"&nbr_label_p=" + nbr_label_p
+                            ;
+                        alert("Now launcing web service!"+"postmessage is : "+postMessage);
                         //alert(JSON.stringify(postMessage));
                         $.ajax({
                             url: url_post + postMessage, 

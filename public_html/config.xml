@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getOfList2</url>
+    <url>http://localhost:8080/labelof</url>
     
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getAllPrinter</url>
+    <url>http://localhost:8080/getAllPrinter</url>
     
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/postPrintMessage</url>
+    <url>http://localhost:8080/postPrintMessage</url>
     
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getLabelTypes</url>
+    <url>http://localhost:8080/getLabelTypes</url>
 
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getRetourData</url>
+    <url>http://localhost:8080/getRetourData</url>
     
-    <url>http://localhost:8080/PrintMvnWeb/webresources/home/getFilterOF</url>
 </configuration>
